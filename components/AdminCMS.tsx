@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Layout as LayoutIcon, Save, Plus, Edit, Trash2, Calendar as CalendarIcon, ChevronLeft, Image as ImageIcon, XCircle, Video, Link as LinkIcon } from 'lucide-react';
+import { Settings, Layout as LayoutIcon, Save, Plus, Edit, Trash2, Calendar as CalendarIcon, ChevronLeft, Image as ImageIcon, XCircle, Video, Link as LinkIcon, Clock, List } from 'lucide-react';
 import { SiteConfig, Space, SpaceType } from '../types';
 
 interface AdminCMSProps {
@@ -442,6 +442,37 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
                         />
                       </div>
                    </div>
+                   
+                   {/* NEW: Availability */}
+                   <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Disponibilidade / Funcionamento</label>
+                      <div className="relative">
+                        <Clock className="absolute left-3 top-3 text-slate-400" size={18} />
+                        <input 
+                          type="text" 
+                          value={currentSpace.availability || ''}
+                          onChange={e => setCurrentSpace({...currentSpace, availability: e.target.value})}
+                          className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
+                          placeholder="Ex: Seg a Sex, 08h às 18h"
+                        />
+                      </div>
+                   </div>
+
+                   {/* NEW: Items Included */}
+                   <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Itens Inclusos <span className="text-xs font-normal text-slate-400 ml-1">(separar por vírgula)</span></label>
+                      <div className="relative">
+                        <List className="absolute left-3 top-3 text-slate-400" size={18} />
+                        <input 
+                          type="text" 
+                          value={currentSpace.itemsIncluded?.join(', ') || ''}
+                          onChange={e => setCurrentSpace({...currentSpace, itemsIncluded: e.target.value.split(',').map(s => s.trim())})}
+                          className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
+                          placeholder="Mesas, Cadeiras, Grelha..."
+                        />
+                      </div>
+                   </div>
+
                    <div>
                       <label className="block text-sm font-bold text-slate-700 mb-2">Diferenciais <span className="text-xs font-normal text-slate-400 ml-1">(separar por vírgula)</span></label>
                       <input 

@@ -28,16 +28,27 @@ export const Contact: React.FC = () => {
     e.preventDefault();
     setFormStatus('sending');
 
+    // Construct the lead payload once to ensure consistency between DB and Webhook
+    const leadPayload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      interest: `${formData.eventType} - ${formData.message}`,
+      date: formData.date || new Date().toISOString().split('T')[0],
+      status: 'new',
+      source: 'website_contact_form'
+    };
+
     try {
       // 1. Save to Database
       const { error } = await supabase.from('leads').insert([
         {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          interest: `${formData.eventType} - ${formData.message}`,
-          date: formData.date || new Date().toISOString().split('T')[0],
-          status: 'new'
+          name: leadPayload.name,
+          email: leadPayload.email,
+          phone: leadPayload.phone,
+          interest: leadPayload.interest,
+          date: leadPayload.date,
+          status: leadPayload.status
         }
       ]);
 
@@ -48,7 +59,7 @@ export const Contact: React.FC = () => {
         await fetch('https://n8n.apcef-eventos.com/webhook/new-contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(leadPayload)
         });
       } catch (webhookError) {
           console.warn("Webhook failed (network/cors)", webhookError);

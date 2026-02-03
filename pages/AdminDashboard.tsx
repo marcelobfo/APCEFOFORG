@@ -33,13 +33,11 @@ export const AdminDashboard: React.FC = () => {
   const [isSpaceModalOpen, setIsSpaceModalOpen] = useState(false);
   const [currentSpace, setCurrentSpace] = useState<Partial<Space>>({});
   
-  // Integrations State (Mock)
+  // Integrations State
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([
     { id: '1', name: 'Sistema Financeiro', prefix: 'apcef_live_fin...', created: '2025-01-10', lastUsed: 'Há 2 horas' }
   ]);
-  const [webhooks, setWebhooks] = useState<WebhookConfig[]>([
-    { id: '1', url: 'https://n8n.apcef-eventos.com/webhook/new-lead', event: 'booking.created', active: true, lastTriggered: 'Nunca' }
-  ]);
+  const [webhooks, setWebhooks] = useState<WebhookConfig[]>([]);
   const [apiLogs, setApiLogs] = useState<ApiLog[]>([]);
 
   useEffect(() => {
@@ -68,13 +66,15 @@ export const AdminDashboard: React.FC = () => {
       const spacesPromise = Promise.resolve(supabase.from('spaces').select('*').order('name', { ascending: true }));
       const profilesPromise = Promise.resolve(supabase.from('profiles').select('*').order('created_at', { ascending: false }));
       const configPromise = Promise.resolve(supabase.from('site_settings').select('*').single());
+      const webhooksPromise = Promise.resolve(supabase.from('webhooks').select('*').order('created_at', { ascending: false }));
 
-      const [leadsRes, bookingsRes, spacesRes, profilesRes, configRes] = await Promise.all([
+      const [leadsRes, bookingsRes, spacesRes, profilesRes, configRes, webhooksRes] = await Promise.all([
         leadsPromise.catch(e => ({ data: [], error: e })),
         bookingsPromise.catch(e => ({ data: [], error: e })),
         spacesPromise.catch(e => ({ data: [], error: e })),
         profilesPromise.catch(e => ({ data: [], error: e })),
-        configPromise.catch(e => ({ data: null, error: e }))
+        configPromise.catch(e => ({ data: null, error: e })),
+        webhooksPromise.catch(e => ({ data: [], error: e }))
       ]);
 
       if (leadsRes.data) setLeads(leadsRes.data);
@@ -82,6 +82,17 @@ export const AdminDashboard: React.FC = () => {
       if (spacesRes.data) setSpaces(spacesRes.data);
       if (profilesRes.data) setUserProfiles(profilesRes.data as UserProfile[]);
       if (configRes.data) setSiteConfig(configRes.data);
+      
+      // Map Webhooks from DB (snake_case) to Frontend (camelCase)
+      if (webhooksRes.data) {
+        setWebhooks(webhooksRes.data.map((w: any) => ({
+          id: w.id,
+          url: w.url,
+          event: w.event,
+          active: w.active,
+          lastTriggered: w.last_triggered || 'Nunca'
+        })));
+      }
 
     } catch (error) {
       console.error("Error fetching admin data", error);
@@ -249,53 +260,74 @@ export const AdminDashboard: React.FC = () => {
     toast.success("Chave de API gerada com sucesso!");
   };
 
-  const addWebhook = (url: string) => {
-    const newWebhook: WebhookConfig = {
-      id: Math.random().toString(36).substr(2, 9),
-      url: url,
-      event: 'booking.created',
-      active: true
-    };
-    setWebhooks([...webhooks, newWebhook]);
-    toast.success("Webhook adicionado!");
+  const addWebhook = async (url: string) => {
+    try {
+      const newWebhookPayload = {
+        url: url,
+        event: 'booking.created',
+        active: true,
+        last_triggered: 'Nunca'
+      };
+
+      const { data, error } = await supabase.from('webhooks').insert([newWebhookPayload]).select();
+
+      if (error) throw error;
+
+      if (data) {
+        const mappedWebhook: WebhookConfig = {
+          id: data[0].id,
+          url: data[0].url,
+          event: data[0].event,
+          active: data[0].active,
+          lastTriggered: data[0].last_triggered
+        };
+        setWebhooks([...webhooks, mappedWebhook]);
+        toast.success("Webhook salvo com sucesso!");
+      }
+    } catch (error) {
+      console.error('Error adding webhook:', error);
+      toast.error('Erro ao salvar Webhook.');
+    }
   };
 
-  // ACTUAL Fetch Trigger for Webhook Test
-  const triggerTestWebhook = async (id: string) => {
+  // ACTUAL Fetch Trigger for Webhook Test with Payload and Persistence
+  const triggerTestWebhook = async (id: string, payload?: any) => {
     const hook = webhooks.find(w => w.id === id);
     if (!hook) return;
 
     const toastId = toast.loading('Disparando Webhook...');
     const startTime = Date.now();
 
+    const body = payload || {
+        event: 'test_ping',
+        timestamp: new Date().toISOString(),
+        message: 'This is a test event from APCEF Admin Panel'
+    };
+
     try {
         const response = await fetch(hook.url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                event: 'test_ping',
-                timestamp: new Date().toISOString(),
-                message: 'This is a test event from APCEF Admin Panel'
-            }),
-            // mode: 'no-cors' // Removed no-cors to allow JSON body, assuming server handles CORS or we catch error
+            body: JSON.stringify(body),
         });
 
-        // If no-cors is NOT used, we can check response.ok. 
-        // If the server doesn't support CORS, this will throw an error caught below.
-        
         const latency = Date.now() - startTime;
+        const nowString = 'Agora mesmo (' + new Date().toLocaleTimeString() + ')';
         
+        // Update DB
+        await supabase.from('webhooks').update({ last_triggered: nowString }).eq('id', id);
+
         const newLog: ApiLog = {
           id: Math.random().toString(),
           endpoint: hook.url,
           method: 'POST',
-          status: response.status as any || 200, // Fallback if opaque
+          status: response.status as any || 200, 
           timestamp: new Date().toLocaleTimeString(),
           latency: `${latency}ms`
         };
         
         setApiLogs(prev => [newLog, ...prev]);
-        setWebhooks(prev => prev.map(w => w.id === id ? {...w, lastTriggered: 'Agora mesmo'} : w));
+        setWebhooks(prev => prev.map(w => w.id === id ? {...w, lastTriggered: nowString} : w));
         
         toast.success('Webhook disparado com sucesso!', { id: toastId });
 
@@ -312,8 +344,6 @@ export const AdminDashboard: React.FC = () => {
             latency: `${latency}ms`
         };
         setApiLogs(prev => [newLog, ...prev]);
-
-        // Specific message if likely CORS error
         toast.error('Erro no envio (Provável bloqueio CORS do servidor destino)', { id: toastId });
     }
   };

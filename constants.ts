@@ -4,65 +4,140 @@ import { Space, SpaceType, Booking, Lead, SiteConfig } from './types';
 export const SPACES: Space[] = [
   {
     id: '1',
-    name: 'Pequenas Confraternizações',
-    description: 'Churrasqueiras ideais para encontros intimistas de empresas e famílias.',
-    capacity: 50,
-    price: 800,
+    name: 'Churrasqueiras',
+    description: 'Área ideal para confraternizações informais com amigos e família.',
+    capacity: 60,
+    price: 400, // Preço estimado, ajustar no admin
     type: SpaceType.INTIMATE,
     image: 'https://picsum.photos/id/1080/800/600',
-    gallery: ['https://picsum.photos/id/1080/800/600', 'https://picsum.photos/id/1081/800/600'],
-    features: ['Churrasqueira', 'Freezer', 'Mesas Rústicas', 'Área Coberta']
+    gallery: [],
+    features: ['Área Coberta', 'Freezer'],
+    availability: 'Sábado, Domingo, Feriado ou Dia Útil (08h às 17h)',
+    itemsIncluded: ['Grelha', 'Mesas Rústicas']
   },
   {
     id: '2',
-    name: 'Mega Eventos (Ginásio)',
-    description: 'Quadra poliesportiva ampla para grandes convenções e shows.',
-    capacity: 4000,
-    price: 15000,
-    type: SpaceType.SPORTS,
-    image: 'https://picsum.photos/id/1059/800/600',
+    name: 'Cabana ou Salão de Jogos',
+    description: 'Espaço amplo e versátil para eventos médios e recreação.',
+    capacity: 350,
+    price: 1500,
+    type: SpaceType.SOCIAL,
+    image: 'https://picsum.photos/id/1081/800/600',
     gallery: [],
-    features: ['Arquibancada', 'Palco Modulável', 'Vestiários', 'Iluminação de Arena']
+    features: ['Jogos', 'Área Coberta'],
+    availability: 'Sábado, Domingo, Feriado ou Dia Útil (08h às 17h)',
+    itemsIncluded: []
   },
   {
     id: '3',
-    name: 'Salão Climatizado',
-    description: 'Sofisticação e conforto para casamentos, bodas e jantares corporativos.',
-    capacity: 600,
+    name: 'Quadra (sem uso do Clube)',
+    description: 'Espaço esportivo amplo para eventos ou competições.',
+    capacity: 2000,
+    price: 2500,
+    type: SpaceType.SPORTS,
+    image: 'https://picsum.photos/id/1059/800/600',
+    gallery: [],
+    features: ['Iluminação', 'Arquibancada'],
+    availability: 'Sábado, Domingo, Feriado ou Dia Útil (08h às 17h)',
+    itemsIncluded: []
+  },
+  {
+    id: '4',
+    name: 'Clube (sem exclusividade)',
+    description: 'Acesso às áreas comuns do clube para eventos compartilhados.',
+    capacity: 500,
+    price: 3000,
+    type: SpaceType.OUTDOOR,
+    image: 'https://picsum.photos/id/10/800/600',
+    gallery: [],
+    features: ['Piscinas', 'Área Verde'],
+    availability: 'Sábado, Domingo, Feriado ou Dia Útil (08h às 17h)',
+    itemsIncluded: []
+  },
+  {
+    id: '5',
+    name: 'Clube (com exclusividade)',
+    description: 'Locação total do clube para grandes eventos privados.',
+    capacity: 3000,
+    price: 15000,
+    type: SpaceType.CORPORATE,
+    image: 'https://picsum.photos/id/16/800/600',
+    gallery: [],
+    features: ['Exclusividade Total', 'Todas as áreas'],
+    availability: 'Feriado ou Dia Útil (08h às 17h)',
+    itemsIncluded: []
+  },
+  {
+    id: '6',
+    name: 'Cerimonial (Associado ou Não)',
+    description: 'Salão nobre climatizado para casamentos e festas de gala.',
+    capacity: 800,
     price: 5000,
     type: SpaceType.SOCIAL,
     image: 'https://picsum.photos/id/203/800/600',
     gallery: [],
-    features: ['Ar Condicionado Central', 'Cozinha Industrial', 'Palco', 'Camarim']
+    features: ['Ar Condicionado', 'Palco', 'Cozinha'],
+    availability: 'Horário Noturno (22h às 03h)',
+    itemsIncluded: ['Mesas', 'Cadeiras']
   },
   {
-    id: '4',
-    name: 'Choupana Garden',
-    description: 'Ambiente ao ar livre com gramado, perfeito para cerimônias e festas leves.',
-    capacity: 200,
-    price: 2500,
-    type: SpaceType.OUTDOOR,
-    image: 'https://picsum.photos/id/10/800/600',
+    id: '7',
+    name: 'Sala de Reunião',
+    description: 'Ambiente corporativo para reuniões, treinamentos e workshops.',
+    capacity: 70,
+    price: 600,
+    type: SpaceType.CORPORATE,
+    image: 'https://picsum.photos/id/1/800/600',
     gallery: [],
-    features: ['Gramado', 'Iluminação Decorativa', 'Tenda Opcional', 'Área Verde']
+    features: ['Projetor', 'Wifi', 'Climatizado'],
+    availability: 'Sábado, Domingo, Feriado ou Dia Útil (08h às 17h)',
+    itemsIncluded: ['Mesa de Reunião']
   },
   {
-    id: '5',
-    name: 'Social Descontraído',
-    description: 'Área de bar próxima à piscina para happy hours e celebrações informais.',
-    capacity: 150,
+    id: '8',
+    name: 'Bar (Associados/Alto Valor)',
+    description: 'Área descontraída próxima às piscinas.',
+    capacity: 180,
     price: 1200,
     type: SpaceType.SOCIAL,
     image: 'https://picsum.photos/id/437/800/600',
     gallery: [],
-    features: ['Balcão de Bar', 'Proximidade Piscina', 'Som Ambiente', 'Mesas Bistrô']
+    features: ['Balcão', 'Freezer'],
+    availability: 'Feriado/Dia Útil (11h às 16h) ou Noturno (19h às 00h)',
+    itemsIncluded: []
+  },
+  {
+    id: '9',
+    name: 'Cachoeiro - Salão',
+    description: 'Salão de festas na unidade de Cachoeiro.',
+    capacity: 250,
+    price: 1000,
+    type: SpaceType.SOCIAL,
+    image: 'https://picsum.photos/id/180/800/600',
+    gallery: [],
+    features: ['Cozinha de apoio'],
+    availability: 'Sábado, Domingo, Dia Útil e Feriado (08h às 17h)',
+    itemsIncluded: []
+  },
+  {
+    id: '10',
+    name: 'Cachoeiro - Churrasqueiras',
+    description: 'Área de churrasco na unidade de Cachoeiro.',
+    capacity: 60,
+    price: 350,
+    type: SpaceType.INTIMATE,
+    image: 'https://picsum.photos/id/292/800/600',
+    gallery: [],
+    features: ['Área Verde'],
+    availability: 'Sábado, Domingo, Dia Útil e Feriado (08h às 17h)',
+    itemsIncluded: []
   }
 ];
 
 export const MOCK_BOOKINGS: Booking[] = [
   {
     id: 'b1',
-    spaceId: '3',
+    spaceId: '6',
     date: new Date(new Date().setDate(new Date().getDate() + 5)).toISOString().split('T')[0],
     clientName: 'Empresa X Ltda',
     status: 'confirmed',
@@ -74,31 +149,7 @@ export const MOCK_BOOKINGS: Booking[] = [
     date: new Date(new Date().setDate(new Date().getDate() + 10)).toISOString().split('T')[0],
     clientName: 'João Silva',
     status: 'pending',
-    totalValue: 800
-  },
-  {
-    id: 'b3',
-    spaceId: '2',
-    date: new Date(new Date().setDate(new Date().getDate() + 12)).toISOString().split('T')[0],
-    clientName: 'Formatura Medicina UVV',
-    status: 'confirmed',
-    totalValue: 15000
-  },
-  {
-    id: 'b4',
-    spaceId: '4',
-    date: new Date(new Date().setDate(new Date().getDate() + 15)).toISOString().split('T')[0],
-    clientName: 'Casamento Marina e Pedro',
-    status: 'confirmed',
-    totalValue: 2500
-  },
-  {
-    id: 'b5',
-    spaceId: '5',
-    date: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString().split('T')[0],
-    clientName: 'Aniversário 30 anos',
-    status: 'cancelled',
-    totalValue: 1200
+    totalValue: 400
   }
 ];
 
@@ -111,42 +162,6 @@ export const MOCK_LEADS: Lead[] = [
     interest: 'Casamento em 2026',
     date: '2025-05-10',
     status: 'new'
-  },
-  {
-    id: 'l2',
-    name: 'Carlos Santos',
-    email: 'carlos@tech.com',
-    phone: '(27) 98888-8888',
-    interest: 'Convenção Anual',
-    date: '2025-05-12',
-    status: 'contacted'
-  },
-  {
-    id: 'l3',
-    name: 'Fernanda Lima',
-    email: 'fernanda.l@agencia.com',
-    phone: '(27) 97777-7777',
-    interest: 'Locação para Gravação',
-    date: '2025-05-14',
-    status: 'new'
-  },
-  {
-    id: 'l4',
-    name: 'Roberto Dias',
-    email: 'beto@show.com',
-    phone: '(27) 96666-6666',
-    interest: 'Show de Verão',
-    date: '2025-05-01',
-    status: 'converted'
-  },
-  {
-    id: 'l5',
-    name: 'Julia Roberts',
-    email: 'julia@hollywood.com',
-    phone: '(27) 95555-5555',
-    interest: 'Festa de 15 anos',
-    date: '2025-05-18',
-    status: 'contacted'
   }
 ];
 
@@ -179,7 +194,7 @@ export const INITIAL_SITE_CONFIG: SiteConfig = {
   contact_email: 'eventos@apcefes.com.br',
 
   // Spaces
-  spaces_banner: 'https://picsum.photos/id/16/1920/600', // Default placeholder
+  spaces_banner: 'https://picsum.photos/id/16/1920/600', 
   spaces_title: 'Nossos Espaços',
   spaces_subtitle: 'Conheça nossa estrutura completa. Do churrasco em família à convenção para milhares de pessoas.'
 };

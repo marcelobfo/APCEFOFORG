@@ -9,7 +9,7 @@ interface AdminIntegrationsProps {
   apiLogs: ApiLog[];
   generateApiKey: () => void;
   addWebhook: (url: string) => void;
-  triggerTestWebhook: (id: string) => void;
+  triggerTestWebhook: (id: string, payload?: any) => void;
 }
 
 export const AdminIntegrations: React.FC<AdminIntegrationsProps> = ({ 
@@ -21,6 +21,34 @@ export const AdminIntegrations: React.FC<AdminIntegrationsProps> = ({
     if (!newWebhookUrl) return;
     addWebhook(newWebhookUrl);
     setNewWebhookUrl('');
+  };
+
+  const handleTriggerTest = async (id: string) => {
+    const hook = webhooks.find(w => w.id === id);
+    if (!hook) return;
+
+    // Simulate a complete Lead Payload
+    const testPayload = {
+      event: 'test_lead_simulation',
+      timestamp: new Date().toISOString(),
+      data: {
+        id: `test_${Math.random().toString(36).substr(2, 9)}`,
+        name: "Fabrício Teste (Simulação)",
+        email: "teste.integracao@apcef.com.br",
+        phone: "(27) 99999-8888",
+        interest: "SIMULAÇÃO: Gostaria de orçar o Salão Nobre para um evento corporativo de 150 pessoas.",
+        date: new Date().toISOString().split('T')[0],
+        status: "new",
+        source: "admin_panel_test_button",
+        meta: {
+          space_id: "space_123",
+          space_name: "Salão Nobre",
+          origin_url: "https://apcef-eventos.com/admin"
+        }
+      }
+    };
+
+    triggerTestWebhook(id, testPayload);
   };
 
   return (
@@ -86,7 +114,7 @@ export const AdminIntegrations: React.FC<AdminIntegrationsProps> = ({
                  <p className="text-sm font-medium text-slate-800 truncate mb-3">{hook.url}</p>
                  <div className="flex justify-between items-center text-xs text-slate-500">
                    <span>Último disparo: {hook.lastTriggered}</span>
-                   <button onClick={() => triggerTestWebhook(hook.id)} className="text-apcef-blue hover:underline font-bold">Testar Envio</button>
+                   <button onClick={() => handleTriggerTest(hook.id)} className="text-apcef-blue hover:underline font-bold">Testar Envio (Simular Lead)</button>
                  </div>
               </div>
             ))}

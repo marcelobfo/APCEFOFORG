@@ -25,9 +25,11 @@ export interface Space {
   price: number;
   type: SpaceType;
   image: string;
-  gallery: string[]; // New field
-  video_url?: string; // New field
+  gallery: string[];
+  video_url?: string;
   features: string[];
+  availability?: string; // Novo campo: Funcionamento
+  itemsIncluded?: string[]; // Novo campo: Itens Inclusos
 }
 
 export interface Booking {
