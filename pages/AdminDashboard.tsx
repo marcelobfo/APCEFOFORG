@@ -77,15 +77,15 @@ export const AdminDashboard: React.FC = () => {
         webhooksPromise.catch(e => ({ data: [], error: e }))
       ]);
 
-      if (leadsRes.data) setLeads(leadsRes.data);
-      if (bookingsRes.data) setBookings(bookingsRes.data);
-      if (spacesRes.data) setSpaces(spacesRes.data);
+      if (leadsRes.data) setLeads(leadsRes.data as Lead[]);
+      if (bookingsRes.data) setBookings(bookingsRes.data as Booking[]);
+      if (spacesRes.data) setSpaces(spacesRes.data as Space[]);
       if (profilesRes.data) setUserProfiles(profilesRes.data as UserProfile[]);
-      if (configRes.data) setSiteConfig(configRes.data);
+      if (configRes.data) setSiteConfig(configRes.data as SiteConfig);
       
       // Map Webhooks from DB (snake_case) to Frontend (camelCase)
       if (webhooksRes.data) {
-        setWebhooks(webhooksRes.data.map((w: any) => ({
+        setWebhooks((webhooksRes.data as any[]).map((w: any) => ({
           id: w.id,
           url: w.url,
           event: w.event,
