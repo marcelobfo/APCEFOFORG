@@ -111,12 +111,16 @@ export const AdminDashboard: React.FC = () => {
   // --- Handlers ---
 
   const handleSaveConfig = async () => {
-    const savePromise = supabase
+    const saveAction = async () => {
+      const { error } = await supabase
         .from('site_settings')
         .update(siteConfig)
         .eq('id', siteConfig.id);
+      
+      if (error) throw error;
+    };
 
-    await toast.promise(savePromise, {
+    await toast.promise(saveAction(), {
        loading: 'Salvando configurações...',
        success: 'Configurações atualizadas com sucesso!',
        error: 'Erro ao salvar. Verifique suas permissões.'
