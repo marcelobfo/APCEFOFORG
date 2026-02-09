@@ -10,14 +10,13 @@ interface AdminOverviewProps {
 export const AdminOverview: React.FC<AdminOverviewProps> = ({ bookings, leads }) => {
   const stats = [
     { label: 'Reservas do Mês', value: String(bookings.length), icon: CalendarIcon, color: 'text-blue-600', bg: 'bg-blue-50 border border-blue-100' },
-    { label: 'Faturamento', value: `R$ ${bookings.filter(b => b.status === 'confirmed').reduce((acc, curr) => acc + curr.totalValue, 0).toLocaleString()}`, icon: DollarSign, color: 'text-green-600', bg: 'bg-green-50 border border-green-100' },
     { label: 'Novos Leads', value: String(leads.filter(l => l.status === 'new').length), icon: Users, color: 'text-orange-600', bg: 'bg-orange-50 border border-orange-100' },
     { label: 'Taxa Ocupação', value: '68%', icon: TrendingUp, color: 'text-purple-600', bg: 'bg-purple-50 border border-purple-100' },
   ];
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {stats.map((stat, i) => (
           <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-lg transition-all transform hover:-translate-y-1">
             <div className={`p-4 rounded-xl ${stat.bg} ${stat.color}`}>
@@ -42,7 +41,6 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({ bookings, leads })
                    <p className="font-bold text-slate-800">{booking.clientName}</p>
                    <p className="text-sm text-slate-500">{new Date(booking.date).toLocaleDateString()} • {booking.spaceId}</p>
                  </div>
-                 <span className="font-bold text-slate-700">R$ {booking.totalValue.toLocaleString()}</span>
                </div>
              ))}
            </div>

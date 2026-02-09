@@ -1,18 +1,30 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Filter, X, Clock, MapPin, User, DollarSign, CheckCircle, AlertCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Filter, X, Clock, MapPin, User, CheckCircle, AlertCircle, Plus, Calendar, Save } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { supabase } from '../lib/supabase';
 import { Booking, Space } from '../types';
 
 interface AdminCalendarProps {
   bookings: Booking[];
   spaces: Space[];
+  onAddBooking?: (booking: Booking) => void;
 }
 
-export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces }) => {
+export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces, onAddBooking }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [filterSpaceId, setFilterSpaceId] = useState<string | 'all'>('all');
   
   // State for Day Details Modal
   const [selectedDay, setSelectedDay] = useState<{ day: number, bookings: Booking[] } | null>(null);
+
+  // State for Add Booking Modal
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newBookingData, setNewBookingData] = useState({
+    clientName: '',
+    spaceId: '',
+    date: '',
+    status: 'confirmed' as 'confirmed' | 'pending' | 'cancelled'
+  });
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
@@ -47,6 +59,57 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces }
     setSelectedDay({ day, bookings: dayBookings });
   };
 
+  const openAddModal = (date?: string) => {
+    const initialDate = date || new Date().toISOString().split('T')[0];
+    setNewBookingData({
+        clientName: '',
+        spaceId: spaces[0]?.id || '',
+        date: initialDate,
+        status: 'confirmed'
+    });
+    setIsAddModalOpen(true);
+  };
+
+  const handleSaveBooking = async () => {
+    if (!newBookingData.clientName || !newBookingData.spaceId || !newBookingData.date) {
+        toast.error("Preencha todos os campos obrigatórios.");
+        return;
+    }
+
+    const toastId = toast.loading("Salvando reserva...");
+
+    try {
+        const payload = {
+            clientName: newBookingData.clientName,
+            spaceId: newBookingData.spaceId,
+            date: newBookingData.date,
+            status: newBookingData.status
+        };
+
+        const { data, error } = await supabase.from('bookings').insert([payload]).select().single();
+
+        if (error) throw error;
+
+        if (data && onAddBooking) {
+            onAddBooking(data as Booking);
+            
+            // If the added booking matches the currently selected day view, update that view too
+            if (selectedDay) {
+                const bookingDate = new Date(data.date);
+                if (bookingDate.getDate() === selectedDay.day && bookingDate.getMonth() === currentDate.getMonth()) {
+                     setSelectedDay(prev => prev ? ({...prev, bookings: [...prev.bookings, data as Booking]}) : null);
+                }
+            }
+        }
+
+        toast.success("Reserva adicionada com sucesso!", { id: toastId });
+        setIsAddModalOpen(false);
+    } catch (error: any) {
+        console.error("Error creating booking", error);
+        toast.error("Erro ao salvar: " + error.message, { id: toastId });
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 animate-fade-in relative">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
@@ -61,16 +124,24 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces }
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200">
-          <Filter size={18} className="text-slate-400" />
-          <select 
-            value={filterSpaceId}
-            onChange={(e) => setFilterSpaceId(e.target.value)}
-            className="bg-transparent border-none text-sm font-bold text-slate-700 focus:ring-0 cursor-pointer outline-none"
-          >
-            <option value="all">Todos os Espaços</option>
-            {spaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-          </select>
+        <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200">
+            <Filter size={18} className="text-slate-400" />
+            <select 
+                value={filterSpaceId}
+                onChange={(e) => setFilterSpaceId(e.target.value)}
+                className="bg-transparent border-none text-sm font-bold text-slate-700 focus:ring-0 cursor-pointer outline-none"
+            >
+                <option value="all">Todos os Espaços</option>
+                {spaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
+            </div>
+            <button 
+                onClick={() => openAddModal()}
+                className="flex items-center gap-2 px-4 py-2 bg-apcef-blue text-white rounded-xl text-sm font-bold hover:bg-blue-800 transition-colors shadow-lg shadow-blue-900/10"
+            >
+                <Plus size={18} /> Nova Reserva
+            </button>
         </div>
       </div>
 
@@ -93,7 +164,7 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces }
             <div 
               key={day} 
               onClick={() => handleDayClick(day)}
-              className={`min-h-[120px] p-3 rounded-xl border transition-all cursor-pointer hover:shadow-lg hover:scale-[1.02] 
+              className={`min-h-[120px] p-3 rounded-xl border transition-all cursor-pointer hover:shadow-lg hover:scale-[1.02] group
                 ${isToday ? 'bg-blue-50/50 border-blue-200 ring-2 ring-blue-100' : 'bg-white border-slate-100 hover:border-apcef-blue/30'}
                 ${hasConfirmed && !isToday ? 'border-l-4 border-l-green-500' : ''}
               `}
@@ -116,9 +187,18 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces }
                   <div className="text-[10px] text-center text-slate-400 font-medium pt-1">+ {dayBookings.length - 3} mais</div>
                 )}
                 {dayBookings.length === 0 && (
-                  <div className="h-full flex items-center justify-center pt-4 opacity-0 hover:opacity-100 transition-opacity">
-                      <span className="text-xs text-slate-300 font-medium">+ Adicionar</span>
-                  </div>
+                   <div className="h-full flex items-center justify-center pt-4">
+                      <button 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            const dateStr = new Date(year, currentDate.getMonth(), day).toISOString().split('T')[0];
+                            openAddModal(dateStr);
+                        }}
+                        className="text-xs text-slate-300 font-medium hover:text-apcef-orange hover:bg-orange-50 px-2 py-1 rounded transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                          + Adicionar
+                      </button>
+                   </div>
                 )}
               </div>
             </div>
@@ -164,10 +244,6 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces }
                             {booking.status === 'confirmed' ? 'Aprovado / Confirmado' : booking.status === 'pending' ? 'Pendente' : 'Cancelado'}
                           </span>
                         </div>
-                        <div className="text-right">
-                           <span className="block text-xs text-slate-400 uppercase font-bold">Valor</span>
-                           <span className="text-lg font-bold text-slate-700">R$ {booking.totalValue.toLocaleString()}</span>
-                        </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-3 pl-2 text-sm text-slate-600">
@@ -198,7 +274,16 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces }
               )}
             </div>
             
-            <div className="p-4 bg-white border-t border-slate-100 flex justify-end">
+            <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
+                <button 
+                 onClick={() => {
+                    const dateStr = new Date(year, currentDate.getMonth(), selectedDay.day).toISOString().split('T')[0];
+                    openAddModal(dateStr);
+                 }}
+                 className="px-6 py-2 bg-apcef-blue text-white hover:bg-blue-800 font-bold rounded-lg transition-colors flex items-center gap-2"
+               >
+                 <Plus size={16} /> Adicionar Reserva
+               </button>
                <button 
                  onClick={() => setSelectedDay(null)}
                  className="px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors"
@@ -208,6 +293,95 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces }
             </div>
           </div>
         </div>
+      )}
+
+      {/* Manual Booking Add Modal */}
+      {isAddModalOpen && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+                <div className="bg-white p-6 border-b border-slate-100 flex justify-between items-center">
+                   <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                      <Plus size={20} className="text-apcef-blue"/> Nova Reserva
+                   </h3>
+                   <button 
+                    onClick={() => setIsAddModalOpen(false)} 
+                    className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-700"
+                   >
+                     <X size={20} />
+                   </button>
+                </div>
+
+                <div className="p-8 space-y-5">
+                   <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Nome do Cliente / Evento</label>
+                      <input 
+                         type="text" 
+                         value={newBookingData.clientName}
+                         onChange={(e) => setNewBookingData({...newBookingData, clientName: e.target.value})}
+                         className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
+                         placeholder="Ex: Aniversário João"
+                      />
+                   </div>
+
+                   <div>
+                     <label className="block text-sm font-bold text-slate-700 mb-2">Espaço</label>
+                     <select 
+                       value={newBookingData.spaceId}
+                       onChange={(e) => setNewBookingData({...newBookingData, spaceId: e.target.value})}
+                       className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
+                     >
+                        <option value="" disabled>Selecione um espaço...</option>
+                        {spaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                     </select>
+                   </div>
+
+                   <div className="grid grid-cols-1 gap-4">
+                       <div>
+                          <label className="block text-sm font-bold text-slate-700 mb-2">Data</label>
+                          <input 
+                             type="date"
+                             value={newBookingData.date}
+                             onChange={(e) => setNewBookingData({...newBookingData, date: e.target.value})}
+                             className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
+                          />
+                       </div>
+                   </div>
+
+                   <div>
+                     <label className="block text-sm font-bold text-slate-700 mb-2">Status Inicial</label>
+                     <div className="flex gap-2">
+                        <button 
+                          onClick={() => setNewBookingData({...newBookingData, status: 'confirmed'})}
+                          className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-all ${newBookingData.status === 'confirmed' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-white text-slate-500 border-slate-200'}`}
+                        >
+                           Confirmado
+                        </button>
+                        <button 
+                          onClick={() => setNewBookingData({...newBookingData, status: 'pending'})}
+                          className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-all ${newBookingData.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' : 'bg-white text-slate-500 border-slate-200'}`}
+                        >
+                           Pendente
+                        </button>
+                     </div>
+                   </div>
+                </div>
+
+                <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                   <button 
+                     onClick={() => setIsAddModalOpen(false)}
+                     className="px-6 py-3 text-slate-600 font-bold hover:bg-slate-200 rounded-xl transition-colors"
+                   >
+                     Cancelar
+                   </button>
+                   <button 
+                     onClick={handleSaveBooking}
+                     className="px-8 py-3 bg-apcef-blue text-white font-bold rounded-xl hover:bg-blue-800 shadow-lg shadow-blue-900/10 transition-transform active:scale-95 flex items-center gap-2"
+                   >
+                     <Save size={18} /> Salvar Reserva
+                   </button>
+                </div>
+             </div>
+          </div>
       )}
     </div>
   );

@@ -208,15 +208,7 @@ export const SpaceDetails: React.FC = () => {
                  <Users size={20} className="text-apcef-teal" />
                  <span className="text-lg font-medium">Capacidade: {space.capacity} pessoas</span>
                </div>
-               <div className="hidden md:block text-2xl font-light opacity-50">|</div>
-               <div className="flex items-center gap-2">
-                  <span className="text-sm uppercase tracking-wide opacity-80">Valor da Diária</span>
-                  {space.capacity === 50 ? (
-                     <span className="text-2xl font-bold text-white">Valor a consultar</span>
-                  ) : (
-                     <span className="text-2xl font-bold text-white">R$ {space.price.toLocaleString('pt-BR')}</span>
-                  )}
-               </div>
+               {/* Removed Price Display */}
              </div>
            </div>
         </div>

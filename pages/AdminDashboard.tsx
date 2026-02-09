@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { Lead, Booking, SiteConfig, Space, SpaceType, WebhookConfig, ApiKey, ApiLog, UserProfile, UserRole } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Shield, Edit } from 'lucide-react';
-import { INITIAL_SITE_CONFIG } from '../constants';
+import { INITIAL_SITE_CONFIG, SPACES } from '../constants';
 
 import { AdminSidebar } from '../components/AdminSidebar';
 import { AdminOverview } from '../components/AdminOverview';
@@ -138,6 +138,11 @@ export const AdminDashboard: React.FC = () => {
       }
   };
 
+  // Booking Handlers
+  const handleAddBooking = (newBooking: Booking) => {
+    setBookings(prev => [...prev, newBooking]);
+  };
+
   const handleEditSpace = (space: Space) => {
     setCurrentSpace(space);
     setIsSpaceModalOpen(true);
@@ -150,7 +155,7 @@ export const AdminDashboard: React.FC = () => {
       price: 0,
       capacity: 0,
       type: SpaceType.SOCIAL,
-      image: 'https://picsum.photos/800/600',
+      image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=800',
       features: []
     });
     setIsSpaceModalOpen(true);
@@ -168,6 +173,46 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  // Function to Seed/Restore Database Spaces
+  const handleSeedSpaces = async () => {
+    if (!window.confirm("ATENÇÃO: Isso irá apagar TODOS os espaços e reservas atuais para restaurar a lista padrão. Continuar?")) {
+        return;
+    }
+
+    const toastId = toast.loading("Restaurando espaços padrão...");
+
+    try {
+        // 1. Delete all bookings first (Foreign Key Constraint)
+        // Using delete with neq filter which acts as "delete all" in Supabase if no simpler method is enabled
+        const { error: bookingsError } = await supabase.from('bookings').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        if (bookingsError) console.warn("Warning clearing bookings:", bookingsError);
+        setBookings([]);
+
+        // 2. Delete all spaces
+        const { error: spacesError } = await supabase.from('spaces').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        if (spacesError) throw spacesError;
+
+        // 3. Insert constant spaces
+        // We ensure 'price' is set to 0 to avoid DB Not Null errors, even if we don't use it in UI
+        const spacesToInsert = SPACES.map(({ id, ...rest }) => ({
+           ...rest,
+           price: 0
+        }));
+        
+        const { data, error } = await supabase.from('spaces').insert(spacesToInsert).select();
+        
+        if (error) throw error;
+
+        if (data) {
+            setSpaces(data as Space[]);
+            toast.success("Banco de dados atualizado com sucesso!", { id: toastId });
+        }
+    } catch (error: any) {
+        console.error("Seed error:", error);
+        toast.error("Erro ao atualizar banco: " + error.message, { id: toastId });
+    }
+  };
+
   const handleSaveSpace = async () => {
     if (!currentSpace.name) {
         toast.error("O nome do espaço é obrigatório.");
@@ -175,10 +220,13 @@ export const AdminDashboard: React.FC = () => {
     }
 
     const promise = (async () => {
+        // Ensure price is set to 0 if undefined to satisfy DB
+        const payload = { ...currentSpace, price: currentSpace.price || 0 };
+
         if (currentSpace.id) {
             const { data, error } = await supabase
                 .from('spaces')
-                .update(currentSpace)
+                .update(payload)
                 .eq('id', currentSpace.id)
                 .select();
             if (error) throw error;
@@ -186,7 +234,7 @@ export const AdminDashboard: React.FC = () => {
         } else {
             const { data, error } = await supabase
                 .from('spaces')
-                .insert([currentSpace])
+                .insert([payload])
                 .select();
             if (error) throw error;
             if (data) setSpaces(prev => [...prev, data[0] as Space]);
@@ -290,7 +338,6 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
-  // ACTUAL Fetch Trigger for Webhook Test with Payload and Persistence
   const triggerTestWebhook = async (id: string, payload?: any) => {
     const hook = webhooks.find(w => w.id === id);
     if (!hook) return;
@@ -385,7 +432,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="p-8 max-w-[1600px] mx-auto">
           {activeTab === 'overview' && <AdminOverview bookings={bookings} leads={leads} />}
           
-          {activeTab === 'calendar' && <AdminCalendar bookings={bookings} spaces={spaces} />}
+          {activeTab === 'calendar' && <AdminCalendar bookings={bookings} spaces={spaces} onAddBooking={handleAddBooking} />}
           
           {activeTab === 'leads' && <AdminLeads leads={leads} onUpdateStatus={handleStatusChange} onDelete={handleDeleteLead} />}
           
@@ -396,6 +443,7 @@ export const AdminDashboard: React.FC = () => {
              spaces={spaces} handleEditSpace={handleEditSpace} handleDeleteSpace={handleDeleteSpace} handleNewSpace={handleNewSpace}
              isSpaceModalOpen={isSpaceModalOpen} setIsSpaceModalOpen={setIsSpaceModalOpen}
              currentSpace={currentSpace} setCurrentSpace={setCurrentSpace} handleSaveSpace={handleSaveSpace}
+             handleSeedSpaces={handleSeedSpaces}
           />}
           
           {activeTab === 'integrations' && <AdminIntegrations 

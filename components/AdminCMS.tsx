@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Layout as LayoutIcon, Save, Plus, Edit, Trash2, Calendar as CalendarIcon, ChevronLeft, Image as ImageIcon, XCircle, Video, Link as LinkIcon, Clock, List } from 'lucide-react';
+import { Settings, Layout as LayoutIcon, Save, Plus, Edit, Trash2, Calendar as CalendarIcon, ChevronLeft, Image as ImageIcon, XCircle, Video, Link as LinkIcon, Clock, List, RefreshCw } from 'lucide-react';
 import { SiteConfig, Space, SpaceType } from '../types';
 
 interface AdminCMSProps {
@@ -15,12 +15,14 @@ interface AdminCMSProps {
   currentSpace: Partial<Space>;
   setCurrentSpace: (space: Partial<Space>) => void;
   handleSaveSpace: () => void;
+  handleSeedSpaces?: () => void;
 }
 
 export const AdminCMS: React.FC<AdminCMSProps> = ({
   siteConfig, setSiteConfig, handleSaveConfig,
   spaces, handleEditSpace, handleDeleteSpace, handleNewSpace,
-  isSpaceModalOpen, setIsSpaceModalOpen, currentSpace, setCurrentSpace, handleSaveSpace
+  isSpaceModalOpen, setIsSpaceModalOpen, currentSpace, setCurrentSpace, handleSaveSpace,
+  handleSeedSpaces
 }) => {
   const [cmsSection, setCmsSection] = useState<'pages' | 'spaces'>('pages');
   const [activePageEditor, setActivePageEditor] = useState<'general' | 'home' | 'about' | 'contact' | 'spaces'>('general');
@@ -331,18 +333,24 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
            <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-white">
              <div>
                <h3 className="font-bold text-slate-800 text-xl">Catálogo de Espaços</h3>
-               <p className="text-slate-500 text-sm mt-1">Gerencie fotos, preços e disponibilidade.</p>
+               <p className="text-slate-500 text-sm mt-1">Gerencie fotos e disponibilidade.</p>
              </div>
-             <button onClick={handleNewSpace} className="px-6 py-3 bg-apcef-blue text-white rounded-xl text-sm font-bold hover:bg-blue-800 flex items-center gap-2 shadow-lg shadow-blue-900/20 transition-all active:scale-95">
-               <Plus size={18} /> Novo Espaço
-             </button>
+             <div className="flex gap-3">
+               {handleSeedSpaces && (
+                 <button onClick={handleSeedSpaces} className="px-4 py-3 bg-orange-100 text-orange-700 rounded-xl text-sm font-bold hover:bg-orange-200 flex items-center gap-2 transition-colors">
+                   <RefreshCw size={18} /> Restaurar Padrões
+                 </button>
+               )}
+               <button onClick={handleNewSpace} className="px-6 py-3 bg-apcef-blue text-white rounded-xl text-sm font-bold hover:bg-blue-800 flex items-center gap-2 shadow-lg shadow-blue-900/20 transition-all active:scale-95">
+                 <Plus size={18} /> Novo Espaço
+               </button>
+             </div>
            </div>
            <table className="w-full text-left text-sm">
              <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-100">
                <tr>
                  <th className="p-6 pl-8">Espaço</th>
                  <th className="p-6">Capacidade</th>
-                 <th className="p-6">Preço (Diária)</th>
                  <th className="p-6">Tipo</th>
                  <th className="p-6 text-right pr-8">Ações</th>
                </tr>
@@ -359,7 +367,6 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
                      </div>
                    </td>
                    <td className="p-6 text-slate-600 font-medium">{space.capacity} pax</td>
-                   <td className="p-6 text-slate-800 font-bold">R$ {space.price.toLocaleString()}</td>
                    <td className="p-6">
                      <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-bold border border-slate-200">
                        {space.type}
@@ -377,6 +384,13 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
                    </td>
                  </tr>
                ))}
+               {spaces.length === 0 && (
+                 <tr>
+                    <td colSpan={4} className="p-8 text-center text-slate-400">
+                       Nenhum espaço cadastrado. Utilize o botão "Restaurar Padrões" para carregar a lista inicial.
+                    </td>
+                 </tr>
+               )}
              </tbody>
            </table>
         </div>
@@ -422,25 +436,15 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
                        <ChevronLeft size={16} className="absolute right-4 top-1/2 -translate-y-1/2 -rotate-90 text-slate-400 pointer-events-none"/>
                      </div>
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Capacidade</label>
-                        <input 
-                          type="number" 
-                          value={currentSpace.capacity || ''}
-                          onChange={e => setCurrentSpace({...currentSpace, capacity: Number(e.target.value)})}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Preço Diária (R$)</label>
-                        <input 
-                          type="number" 
-                          value={currentSpace.price || ''}
-                          onChange={e => setCurrentSpace({...currentSpace, price: Number(e.target.value)})}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
-                        />
-                      </div>
+                   
+                   <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Capacidade</label>
+                      <input 
+                        type="number" 
+                        value={currentSpace.capacity || ''}
+                        onChange={e => setCurrentSpace({...currentSpace, capacity: Number(e.target.value)})}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
+                      />
                    </div>
                    
                    {/* NEW: Availability */}

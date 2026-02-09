@@ -127,10 +127,6 @@ export const Home: React.FC = () => {
                       {space.type}
                     </div>
                     <img src={space.image} alt={space.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-                      <p className="text-white text-sm font-medium">Valor da Diária</p>
-                      <p className="text-white text-xl font-bold">R$ {space.price.toLocaleString('pt-BR')}</p>
-                    </div>
                   </div>
                   <div className="p-6">
                     <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-apcef-orange transition-colors">{space.name}</h3>

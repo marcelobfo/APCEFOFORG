@@ -22,14 +22,14 @@ export interface Space {
   name: string;
   description: string;
   capacity: number;
-  price: number;
+  price?: number; // Agora opcional
   type: SpaceType;
   image: string;
   gallery: string[];
   video_url?: string;
   features: string[];
-  availability?: string; // Novo campo: Funcionamento
-  itemsIncluded?: string[]; // Novo campo: Itens Inclusos
+  availability?: string; // Funcionamento
+  itemsIncluded?: string[]; // Itens Inclusos
 }
 
 export interface Booking {
@@ -38,7 +38,7 @@ export interface Booking {
   date: string; // ISO Date YYYY-MM-DD
   clientName: string;
   status: 'pending' | 'confirmed' | 'cancelled';
-  totalValue: number;
+  totalValue?: number; // Agora opcional
 }
 
 export interface Lead {

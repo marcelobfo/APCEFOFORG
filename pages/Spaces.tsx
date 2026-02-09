@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Filter } from 'lucide-react';
+import { Users, Filter, Clock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Space, SiteConfig } from '../types';
 import { INITIAL_SITE_CONFIG } from '../constants';
@@ -135,11 +135,14 @@ export const Spaces: React.FC = () => {
                         </div>
                         <p className="text-gray-600 text-sm mb-6 flex-grow line-clamp-3">{space.description}</p>
                         
-                        <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
-                          <div>
-                            <p className="text-xs text-gray-400 uppercase">Valor da Diária</p>
-                            <p className="text-xl font-bold text-apcef-blue">R$ {space.price.toLocaleString('pt-BR')}</p>
-                          </div>
+                        {space.availability && (
+                           <div className="mb-4 text-xs text-slate-500 bg-slate-50 p-2 rounded border border-slate-100 flex items-start gap-2">
+                             <Clock size={14} className="mt-0.5 text-apcef-blue"/>
+                             <span>{space.availability}</span>
+                           </div>
+                        )}
+                        
+                        <div className="pt-4 border-t border-gray-100 flex items-center justify-end">
                           <span className="px-4 py-2 bg-apcef-blue text-white text-sm font-medium rounded-lg group-hover:bg-apcef-orange transition-colors">
                             Ver Detalhes
                           </span>
