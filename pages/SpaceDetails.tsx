@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Users, CheckCircle, Calendar as CalendarIcon, ArrowLeft, ChevronLeft, ChevronRight, X, Send, Image as ImageIcon, Phone, User, Building2, Mail, MessageSquare, ZoomIn, Video, Clock, List } from 'lucide-react';
@@ -50,7 +49,7 @@ export const SpaceDetails: React.FC = () => {
       // Track ViewContent for the Space
       trackEvent('ViewContent', {
         content_name: data.name,
-        content_type: 'product', // Facebook Standard
+        content_type: 'product',
         content_ids: [data.id],
         value: data.price || 0,
         currency: 'BRL'
@@ -233,7 +232,6 @@ export const SpaceDetails: React.FC = () => {
                  <Users size={20} className="text-apcef-teal" />
                  <span className="text-lg font-medium">Capacidade: {space.capacity} pessoas</span>
                </div>
-               {/* Removed Price Display */}
              </div>
            </div>
         </div>
@@ -357,12 +355,11 @@ export const SpaceDetails: React.FC = () => {
                       >
                          {day}
                       </button>
-                    )
+                    );
                   })}
                 </div>
                 
                 <div className="flex gap-4 mt-6 text-xs justify-center text-slate-500 border-t border-slate-100 pt-4">
-                  {/* Removed "Indisponível" legend as it never appears */}
                   <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-white border border-slate-300"></div> Livre</div>
                   <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-apcef-blue"></div> Selecionado</div>
                 </div>
@@ -392,7 +389,7 @@ export const SpaceDetails: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Reservation Form Modal */}
       {isFormOpen && (
