@@ -12,12 +12,17 @@ ALTER TABLE spaces ADD COLUMN IF NOT EXISTS gallery text[] DEFAULT '{}';
 ALTER TABLE spaces ADD COLUMN IF NOT EXISTS video_url text;
 ALTER TABLE spaces ADD COLUMN IF NOT EXISTS features text[] DEFAULT '{}';
 
+-- NOVAS COLUNAS PARA MARKETING (Analytics & Facebook)
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS google_analytics_id text;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS facebook_pixel_id text;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS facebook_access_token text;
+
 -- Forçar recarregamento do cache do schema
 NOTIFY pgrst, 'reload config';
 
 -- 2. LIMPEZA TOTAL (Remove dados antigos para evitar conflitos)
-DELETE FROM bookings;
-DELETE FROM spaces;
+-- DELETE FROM bookings;
+-- DELETE FROM spaces;
 
 -- 3. INSERÇÃO DOS DADOS CORRETOS COM UUIDs VÁLIDOS
 -- Substituímos os IDs '1', '2'... por UUIDs reais para satisfazer o tipo de coluna do banco.
@@ -138,4 +143,5 @@ INSERT INTO spaces (id, name, description, capacity, type, image, gallery, featu
     'Sábado, Domingo, Feriado ou Dia Útil', 
     ARRAY[]::text[], 
     0
-);
+)
+ON CONFLICT (id) DO NOTHING;

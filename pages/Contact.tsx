@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, Send, MessageSquare } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { SiteConfig } from '../types';
 import { INITIAL_SITE_CONFIG } from '../constants';
+import { trackEvent } from '../lib/tracking';
 
 export const Contact: React.FC = () => {
   const [config, setConfig] = useState<SiteConfig>(INITIAL_SITE_CONFIG);
@@ -22,6 +24,9 @@ export const Contact: React.FC = () => {
     supabase.from('site_settings').select('*').single().then(({data}) => {
       if(data) setConfig(data);
     });
+    
+    // Track ViewContent for Contact Page
+    trackEvent('ViewContent', { content_name: 'Contact Page', content_category: 'Page' });
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,7 +59,19 @@ export const Contact: React.FC = () => {
 
       if (error) throw error;
 
-      // 2. Send to Webhook (Integration)
+      // 2. Track Lead Event (GA4, Pixel, CAPI)
+      trackEvent('Lead', {
+        currency: "BRL",
+        value: 0, // No specific value for a contact lead
+        content_name: formData.eventType,
+        content_category: "Contact Form"
+      }, {
+        email: formData.email,
+        phone: formData.phone,
+        fullName: formData.name
+      });
+
+      // 3. Send to Webhook (Integration)
       try {
         await fetch('https://n8n.apcef-eventos.com/webhook/new-contact', {
             method: 'POST',

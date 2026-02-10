@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Users, CheckCircle, Calendar as CalendarIcon, ArrowLeft, ChevronLeft, ChevronRight, X, Send, Image as ImageIcon, Phone, User, Building2, Mail, MessageSquare, ZoomIn, Video, Clock, List } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { Space } from '../types';
+import { trackEvent } from '../lib/tracking';
 
 export const SpaceDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -44,6 +46,16 @@ export const SpaceDetails: React.FC = () => {
       const { data, error } = await supabase.from('spaces').select('*').eq('id', id).single();
       if (error) throw error;
       setSpace(data);
+      
+      // Track ViewContent for the Space
+      trackEvent('ViewContent', {
+        content_name: data.name,
+        content_type: 'product', // Facebook Standard
+        content_ids: [data.id],
+        value: data.price || 0,
+        currency: 'BRL'
+      });
+
     } catch (error) {
       console.error('Error fetching space:', error);
       toast.error('Erro ao carregar detalhes do espaço');
@@ -121,6 +133,19 @@ export const SpaceDetails: React.FC = () => {
       const { error } = await supabase.from('leads').insert([newLead]);
 
       if (error) throw error;
+      
+      // Track Lead / Purchase Intent
+      trackEvent('Lead', {
+        content_name: space.name,
+        content_category: 'Booking Request',
+        value: space.price || 0,
+        currency: 'BRL',
+        date: selectedDate
+      }, {
+        email: formData.email,
+        phone: formData.whatsapp,
+        fullName: formData.name
+      });
 
       try {
         await fetch('https://n8n.apcef-eventos.com/webhook/new-lead', {
@@ -367,7 +392,7 @@ export const SpaceDetails: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Reservation Form Modal */}
       {isFormOpen && (

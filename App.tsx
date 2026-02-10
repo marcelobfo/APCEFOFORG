@@ -1,5 +1,6 @@
-import React from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+
+import React, { useEffect } from 'react';
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { Layout } from './components/Layout';
 import { Home } from './pages/Home';
@@ -11,15 +12,40 @@ import { Login } from './pages/Login';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { ClientDashboard } from './pages/ClientDashboard';
 import { Sitemap } from './pages/Sitemap';
+import { supabase } from './lib/supabase';
+import { initTracking, trackEvent } from './lib/tracking';
 
 // Wrapper for pages that need the standard layout
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Layout>{children}</Layout>
 );
 
+// Component to handle global route changes
+const RouteObserver: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    trackEvent('PageView', { path: location.pathname });
+  }, [location]);
+
+  return null;
+};
+
 const App: React.FC = () => {
+  useEffect(() => {
+    // Load tracking configuration
+    const loadConfig = async () => {
+      const { data } = await supabase.from('site_settings').select('*').single();
+      if (data) {
+        initTracking(data);
+      }
+    };
+    loadConfig();
+  }, []);
+
   return (
     <HashRouter>
+      <RouteObserver />
       <Toaster 
         position="top-right"
         toastOptions={{

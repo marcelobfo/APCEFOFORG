@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Layout as LayoutIcon, Save, Plus, Edit, Trash2, Calendar as CalendarIcon, ChevronLeft, Image as ImageIcon, XCircle, Video, Link as LinkIcon, Clock, List, RefreshCw } from 'lucide-react';
+import { Settings, Layout as LayoutIcon, Save, Plus, Edit, Trash2, Calendar as CalendarIcon, ChevronLeft, Image as ImageIcon, XCircle, Video, Link as LinkIcon, Clock, List, RefreshCw, BarChart } from 'lucide-react';
 import { SiteConfig, Space, SpaceType } from '../types';
 
 interface AdminCMSProps {
@@ -25,7 +25,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
   handleSeedSpaces
 }) => {
   const [cmsSection, setCmsSection] = useState<'pages' | 'spaces'>('pages');
-  const [activePageEditor, setActivePageEditor] = useState<'general' | 'home' | 'about' | 'contact' | 'spaces'>('general');
+  const [activePageEditor, setActivePageEditor] = useState<'general' | 'marketing' | 'home' | 'about' | 'contact' | 'spaces'>('general');
   const [newGalleryImage, setNewGalleryImage] = useState('');
 
   // Helper for Gallery Management
@@ -49,7 +49,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
           onClick={() => setCmsSection('pages')} 
           className={`flex items-center gap-2 px-6 py-2.5 rounded-lg font-bold text-sm transition-all ${cmsSection === 'pages' ? 'bg-apcef-blue text-white shadow-md' : 'hover:bg-slate-50 text-slate-500 hover:text-slate-800'}`}
         >
-          <Settings size={16} /> Configuração de Páginas
+          <Settings size={16} /> Configuração Global
         </button>
         <button 
           onClick={() => setCmsSection('spaces')} 
@@ -62,10 +62,11 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
       {cmsSection === 'pages' ? (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden pb-12">
            <div className="border-b border-slate-100 p-6 bg-slate-50/50">
-             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Selecione a Página para Editar</label>
+             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Selecione a Seção</label>
              <div className="flex flex-wrap gap-2">
                 {[
                   { id: 'general', label: 'Identidade & SEO' },
+                  { id: 'marketing', label: 'Analytics & Pixel' },
                   { id: 'home', label: 'Página Inicial' },
                   { id: 'about', label: 'Sobre Nós' },
                   { id: 'contact', label: 'Contato' },
@@ -131,6 +132,56 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
                         onChange={(e) => setSiteConfig({...siteConfig, favicon_url: e.target.value})}
                         className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none input-premium" 
                       />
+                    </div>
+                  </div>
+               </div>
+             )}
+
+             {/* MARKETING / ANALYTICS */}
+             {activePageEditor === 'marketing' && (
+               <div className="space-y-6 max-w-3xl animate-fade-in">
+                  <h3 className="font-bold text-slate-800 text-lg border-b border-slate-100 pb-2 mb-6 flex items-center gap-2">
+                    <BarChart className="text-apcef-orange" /> Marketing & Analytics
+                  </h3>
+                  
+                  <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6 text-sm text-blue-800">
+                    <p>Insira abaixo os identificadores das plataformas de rastreamento. As tags serão injetadas automaticamente no site.</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Google Analytics ID (GA4)</label>
+                    <input 
+                      type="text" 
+                      value={siteConfig.google_analytics_id || ''}
+                      onChange={(e) => setSiteConfig({...siteConfig, google_analytics_id: e.target.value})}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none input-premium font-mono text-sm"
+                      placeholder="G-XXXXXXXXXX"
+                    />
+                  </div>
+
+                  <div className="border-t border-slate-100 pt-6 mt-6">
+                    <h4 className="font-bold text-slate-800 mb-4">Facebook / Meta</h4>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <label className="block text-sm font-bold text-slate-700 mb-2">Facebook Pixel ID</label>
+                        <input 
+                          type="text" 
+                          value={siteConfig.facebook_pixel_id || ''}
+                          onChange={(e) => setSiteConfig({...siteConfig, facebook_pixel_id: e.target.value})}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none input-premium font-mono text-sm"
+                          placeholder="Ex: 1234567890"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-slate-700 mb-2">Conversion API Access Token</label>
+                        <textarea 
+                          value={siteConfig.facebook_access_token || ''}
+                          onChange={(e) => setSiteConfig({...siteConfig, facebook_access_token: e.target.value})}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none input-premium font-mono text-xs h-24"
+                          placeholder="Cole o token de acesso da Graph API aqui..."
+                        />
+                        <p className="text-xs text-slate-400 mt-1">Usado para enviar eventos via API (Server-side/CAPI).</p>
+                      </div>
                     </div>
                   </div>
                </div>

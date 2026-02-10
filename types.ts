@@ -60,6 +60,11 @@ export interface SiteConfig {
   logo_url: string;
   favicon_url: string;
   
+  // Analytics & Marketing
+  google_analytics_id?: string; // G-XXXXXXXXXX
+  facebook_pixel_id?: string; // 1234567890
+  facebook_access_token?: string; // Token para CAPI
+
   // Home Content
   hero_title: string;
   hero_subtitle: string;
