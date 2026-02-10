@@ -55,13 +55,13 @@ export const Home: React.FC = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              to="/spaces" 
+              to="/espacos" 
               className="px-8 py-4 bg-apcef-orange text-white rounded-full font-bold text-lg hover:bg-orange-600 transition-all shadow-lg hover:shadow-orange-500/50 flex items-center justify-center gap-2"
             >
               {config.heroButtonText || 'Conhecer Espaços'} <ChevronRight size={20} />
             </Link>
             <Link 
-              to="/contact" 
+              to="/contato" 
               className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/30 text-white rounded-full font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center"
             >
               Falar com Consultor
@@ -109,7 +109,7 @@ export const Home: React.FC = () => {
               <span className="text-apcef-teal font-semibold tracking-wider uppercase text-sm">Portfólio</span>
               <h2 className="text-3xl md:text-4xl font-bold text-apcef-blue mt-2">Espaços em Destaque</h2>
             </div>
-            <Link to="/spaces" className="hidden md:flex items-center gap-1 text-apcef-orange font-semibold hover:text-orange-600">
+            <Link to="/espacos" className="hidden md:flex items-center gap-1 text-apcef-orange font-semibold hover:text-orange-600">
               Ver todos <ChevronRight size={18} />
             </Link>
           </div>
@@ -121,7 +121,7 @@ export const Home: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {featuredSpaces.map(space => (
-                <Link to={`/spaces/${space.id}`} key={space.id} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                <Link to={`/espacos/${space.id}`} key={space.id} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
                   <div className="relative h-64 overflow-hidden">
                     <div className="absolute top-4 left-4 z-10 bg-apcef-blue/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                       {space.type}
@@ -145,7 +145,7 @@ export const Home: React.FC = () => {
           )}
           
           <div className="mt-12 text-center md:hidden">
-            <Link to="/spaces" className="inline-flex items-center gap-2 text-apcef-orange font-bold text-lg">
+            <Link to="/espacos" className="inline-flex items-center gap-2 text-apcef-orange font-bold text-lg">
               Ver todos os espaços <ChevronRight size={20} />
             </Link>
           </div>
@@ -160,7 +160,7 @@ export const Home: React.FC = () => {
           <p className="text-blue-200 text-lg mb-10 max-w-2xl mx-auto">
             Nossa equipe de eventos está pronta para te ajudar a planejar. Entre em contato com nossa consultora.
           </p>
-          <Link to="/contact" className="inline-block px-10 py-4 bg-apcef-orange text-white rounded-full font-bold text-lg hover:bg-orange-600 transition-colors shadow-lg">
+          <Link to="/contato" className="inline-block px-10 py-4 bg-apcef-orange text-white rounded-full font-bold text-lg hover:bg-orange-600 transition-colors shadow-lg">
             Falar no WhatsApp
           </Link>
         </div>

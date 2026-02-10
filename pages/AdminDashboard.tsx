@@ -50,7 +50,7 @@ export const AdminDashboard: React.FC = () => {
       
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        navigate('/admin-login');
+        navigate('/login-admin');
         return;
       }
 
@@ -105,7 +105,7 @@ export const AdminDashboard: React.FC = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast('Sessão encerrada', { icon: '👋' });
-    navigate('/admin-login');
+    navigate('/login-admin');
   };
 
   // --- Handlers ---

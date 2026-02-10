@@ -8,7 +8,8 @@ import { UserRole } from '../types';
 export const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const isAdminPath = location.pathname.includes('admin');
+  // Check both old and new paths for admin detection
+  const isAdminPath = location.pathname.includes('admin') || location.pathname.includes('area-administrativa');
   
   const [isRegistering, setIsRegistering] = useState(false);
   const [isRecovering, setIsRecovering] = useState(false);
@@ -76,7 +77,7 @@ export const Login: React.FC = () => {
           
           // --- HARDCODED SUPER ADMIN CHECK ---
           if (authData.user.email === 'marcelobfo@gmail.com') {
-            navigate('/admin');
+            navigate('/painel-admin');
             return;
           }
 
@@ -92,7 +93,7 @@ export const Login: React.FC = () => {
             if (isAdminPath) {
                setError('Erro ao verificar permissões. Contate o suporte.');
             } else {
-               navigate('/client');
+               navigate('/painel-cliente');
             }
             return;
           }
@@ -101,13 +102,13 @@ export const Login: React.FC = () => {
 
           // Redirect Logic based on Role
           if (userRole === 'super_admin' || userRole === 'editor') {
-            navigate('/admin');
+            navigate('/painel-admin');
           } else {
             if (isAdminPath) {
               setError('Você não tem permissão para acessar a área administrativa.');
               await supabase.auth.signOut();
             } else {
-              navigate('/client');
+              navigate('/painel-cliente');
             }
           }
         }

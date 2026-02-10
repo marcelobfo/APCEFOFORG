@@ -22,10 +22,10 @@ export const Sitemap: React.FC = () => {
             <h2 className="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Páginas Institucionais</h2>
             <ul className="space-y-3">
               <li><Link to="/" className="text-apcef-blue hover:underline hover:text-apcef-orange">Página Inicial</Link></li>
-              <li><Link to="/about" className="text-apcef-blue hover:underline hover:text-apcef-orange">Sobre a APCEF</Link></li>
-              <li><Link to="/contact" className="text-apcef-blue hover:underline hover:text-apcef-orange">Fale Conosco</Link></li>
-              <li><Link to="/spaces" className="text-apcef-blue hover:underline hover:text-apcef-orange">Listagem de Espaços</Link></li>
-              <li><Link to="/client-login" className="text-apcef-blue hover:underline hover:text-apcef-orange">Área do Cliente</Link></li>
+              <li><Link to="/sobre" className="text-apcef-blue hover:underline hover:text-apcef-orange">Sobre a APCEF</Link></li>
+              <li><Link to="/contato" className="text-apcef-blue hover:underline hover:text-apcef-orange">Fale Conosco</Link></li>
+              <li><Link to="/espacos" className="text-apcef-blue hover:underline hover:text-apcef-orange">Listagem de Espaços</Link></li>
+              <li><Link to="/login-cliente" className="text-apcef-blue hover:underline hover:text-apcef-orange">Área do Cliente</Link></li>
             </ul>
           </div>
 
@@ -34,7 +34,7 @@ export const Sitemap: React.FC = () => {
             <ul className="space-y-3">
               {spaces.map(space => (
                 <li key={space.id}>
-                  <Link to={`/spaces/${space.id}`} className="text-apcef-blue hover:underline hover:text-apcef-orange flex items-center gap-2">
+                  <Link to={`/espacos/${space.id}`} className="text-apcef-blue hover:underline hover:text-apcef-orange flex items-center gap-2">
                     <span>{space.name}</span>
                     <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{space.type}</span>
                   </Link>

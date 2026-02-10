@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, User, Instagram, Facebook, Phone, MapPin } from 'lucide-react';
@@ -62,16 +61,16 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-8">
               <Link to="/" className={`${isLinkActive('/') ? 'text-apcef-orange font-semibold' : 'text-gray-600 hover:text-apcef-blue'} transition-colors`}>Home</Link>
-              <Link to="/spaces" className={`${isLinkActive('/spaces') ? 'text-apcef-orange font-semibold' : 'text-gray-600 hover:text-apcef-blue'} transition-colors`}>Espaços</Link>
-              <Link to="/about" className={`${isLinkActive('/about') ? 'text-apcef-orange font-semibold' : 'text-gray-600 hover:text-apcef-blue'} transition-colors`}>Sobre o Clube</Link>
-              <Link to="/contact" className={`${isLinkActive('/contact') ? 'text-apcef-orange font-semibold' : 'text-gray-600 hover:text-apcef-blue'} transition-colors`}>Contato</Link>
+              <Link to="/espacos" className={`${isLinkActive('/espacos') ? 'text-apcef-orange font-semibold' : 'text-gray-600 hover:text-apcef-blue'} transition-colors`}>Espaços</Link>
+              <Link to="/sobre" className={`${isLinkActive('/sobre') ? 'text-apcef-orange font-semibold' : 'text-gray-600 hover:text-apcef-blue'} transition-colors`}>Sobre o Clube</Link>
+              <Link to="/contato" className={`${isLinkActive('/contato') ? 'text-apcef-orange font-semibold' : 'text-gray-600 hover:text-apcef-blue'} transition-colors`}>Contato</Link>
               
               <div className="border-l pl-6 flex items-center space-x-4">
-                <Link to="/client-login" className="flex items-center gap-2 text-sm font-medium text-apcef-blue hover:text-apcef-orange transition-colors">
+                <Link to="/login-cliente" className="flex items-center gap-2 text-sm font-medium text-apcef-blue hover:text-apcef-orange transition-colors">
                   <User size={18} />
                   Área do Cliente
                 </Link>
-                <Link to="/spaces" className="flex items-center gap-2 px-4 py-2 bg-apcef-blue text-white rounded-full text-sm font-medium hover:bg-blue-800 transition-all shadow-lg hover:shadow-xl">
+                <Link to="/espacos" className="flex items-center gap-2 px-4 py-2 bg-apcef-blue text-white rounded-full text-sm font-medium hover:bg-blue-800 transition-all shadow-lg hover:shadow-xl">
                   Reservar Agora
                 </Link>
               </div>
@@ -94,11 +93,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           <div className="md:hidden bg-white border-t">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               <Link to="/" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-apcef-blue hover:bg-gray-50">Home</Link>
-              <Link to="/spaces" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-apcef-blue hover:bg-gray-50">Espaços</Link>
-              <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-apcef-blue hover:bg-gray-50">Sobre</Link>
-              <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-apcef-blue hover:bg-gray-50">Contato</Link>
-              <Link to="/client-login" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-apcef-teal hover:bg-teal-50">Área do Cliente</Link>
-              <Link to="/admin-login" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-apcef-blue hover:bg-blue-50">Área Administrativa</Link>
+              <Link to="/espacos" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-apcef-blue hover:bg-gray-50">Espaços</Link>
+              <Link to="/sobre" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-apcef-blue hover:bg-gray-50">Sobre</Link>
+              <Link to="/contato" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-apcef-blue hover:bg-gray-50">Contato</Link>
+              <Link to="/login-cliente" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-apcef-teal hover:bg-teal-50">Área do Cliente</Link>
+              <Link to="/login-admin" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-apcef-blue hover:bg-blue-50">Área Administrativa</Link>
             </div>
           </div>
         )}
@@ -130,10 +129,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <div>
               <h3 className="text-apcef-orange font-semibold mb-4 uppercase text-sm tracking-wider">Links Rápidos</h3>
               <ul className="space-y-2 text-blue-100 text-sm">
-                <li><Link to="/spaces" className="hover:text-white transition-colors">Nossos Espaços</Link></li>
-                <li><Link to="/about" className="hover:text-white transition-colors">O Clube</Link></li>
-                <li><Link to="/client-login" className="hover:text-white transition-colors">Minhas Reservas</Link></li>
-                <li><Link to="/sitemap" className="hover:text-white transition-colors">Mapa do Site</Link></li>
+                <li><Link to="/espacos" className="hover:text-white transition-colors">Nossos Espaços</Link></li>
+                <li><Link to="/sobre" className="hover:text-white transition-colors">O Clube</Link></li>
+                <li><Link to="/login-cliente" className="hover:text-white transition-colors">Minhas Reservas</Link></li>
+                <li><Link to="/mapa-do-site" className="hover:text-white transition-colors">Mapa do Site</Link></li>
               </ul>
             </div>
 

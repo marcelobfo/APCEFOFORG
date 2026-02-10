@@ -47,20 +47,27 @@ const App: React.FC = () => {
       />
       <Routes>
         <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
-        <Route path="/spaces" element={<PublicRoute><Spaces /></PublicRoute>} />
-        <Route path="/spaces/:id" element={<PublicRoute><SpaceDetails /></PublicRoute>} />
-        <Route path="/about" element={<PublicRoute><About /></PublicRoute>} />
-        <Route path="/contact" element={<PublicRoute><Contact /></PublicRoute>} />
-        <Route path="/sitemap" element={<PublicRoute><Sitemap /></PublicRoute>} />
+        
+        {/* SEO Friendly Routes in Portuguese */}
+        <Route path="/espacos" element={<PublicRoute><Spaces /></PublicRoute>} />
+        <Route path="/espacos/:id" element={<PublicRoute><SpaceDetails /></PublicRoute>} />
+        <Route path="/sobre" element={<PublicRoute><About /></PublicRoute>} />
+        <Route path="/contato" element={<PublicRoute><Contact /></PublicRoute>} />
+        <Route path="/mapa-do-site" element={<PublicRoute><Sitemap /></PublicRoute>} />
         
         {/* Auth Routes */}
-        <Route path="/client-login" element={<Login />} />
-        <Route path="/admin-login" element={<Login />} />
+        <Route path="/login-cliente" element={<Login />} />
+        <Route path="/login-admin" element={<Login />} />
         
         {/* Protected Mock Routes */}
-        <Route path="/client" element={<ClientDashboard />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/painel-cliente" element={<ClientDashboard />} />
+        <Route path="/painel-admin" element={<AdminDashboard />} />
 
+        {/* Redirect old routes or 404s */}
+        <Route path="/spaces" element={<Navigate to="/espacos" replace />} />
+        <Route path="/about" element={<Navigate to="/sobre" replace />} />
+        <Route path="/contact" element={<Navigate to="/contato" replace />} />
+        
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>

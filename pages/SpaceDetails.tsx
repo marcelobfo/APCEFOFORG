@@ -171,7 +171,7 @@ export const SpaceDetails: React.FC = () => {
   }
 
   if (!space) {
-    return <div className="p-20 text-center">Espaço não encontrado. <Link to="/spaces" className="text-apcef-orange">Voltar</Link></div>;
+    return <div className="p-20 text-center">Espaço não encontrado. <Link to="/espacos" className="text-apcef-orange">Voltar</Link></div>;
   }
 
   return (
@@ -181,7 +181,7 @@ export const SpaceDetails: React.FC = () => {
         <img src={space.image} alt={space.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-apcef-blue via-apcef-blue/20 to-transparent opacity-90"></div>
         <div className="absolute top-0 left-0 p-6">
-          <Link to="/spaces" className="flex items-center gap-2 text-white/90 hover:text-white transition-colors bg-black/20 px-4 py-2 rounded-full backdrop-blur-md border border-white/10 hover:bg-black/30">
+          <Link to="/espacos" className="flex items-center gap-2 text-white/90 hover:text-white transition-colors bg-black/20 px-4 py-2 rounded-full backdrop-blur-md border border-white/10 hover:bg-black/30">
             <ArrowLeft size={18} /> Voltar para lista
           </Link>
         </div>

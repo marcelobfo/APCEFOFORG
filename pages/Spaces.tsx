@@ -120,7 +120,7 @@ export const Spaces: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredSpaces.length > 0 ? (
                   filteredSpaces.map(space => (
-                    <Link to={`/spaces/${space.id}`} key={space.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group">
+                    <Link to={`/espacos/${space.id}`} key={space.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group">
                       <div className="relative h-56 overflow-hidden">
                         <img src={space.image} alt={space.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-apcef-blue shadow-sm">
