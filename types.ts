@@ -77,6 +77,8 @@ export interface SiteConfig {
   about_subtitle: string;
   about_history_title: string;
   about_history_text: string;
+  about_image_1?: string; // Nova imagem destaque 1
+  about_image_2?: string; // Nova imagem destaque 2
 
   // Contact Page Content
   contact_banner: string;

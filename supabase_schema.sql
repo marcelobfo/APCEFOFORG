@@ -17,6 +17,10 @@ ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS google_analytics_id text;
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS facebook_pixel_id text;
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS facebook_access_token text;
 
+-- NOVAS COLUNAS PARA IMAGENS DA PÁGINA SOBRE
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_image_1 text;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_image_2 text;
+
 -- Forçar recarregamento do cache do schema
 NOTIFY pgrst, 'reload config';
 

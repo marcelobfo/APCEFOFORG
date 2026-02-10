@@ -276,6 +276,32 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none h-40 resize-none input-premium" 
                     />
                   </div>
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Imagem Destaque 1</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="text" 
+                          value={siteConfig.about_image_1 || ''}
+                          onChange={(e) => setSiteConfig({...siteConfig, about_image_1: e.target.value})}
+                          className="flex-1 px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none input-premium" 
+                        />
+                        {siteConfig.about_image_1 && <img src={siteConfig.about_image_1} className="h-12 w-12 object-cover rounded-lg border border-slate-200" />}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Imagem Destaque 2</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="text" 
+                          value={siteConfig.about_image_2 || ''}
+                          onChange={(e) => setSiteConfig({...siteConfig, about_image_2: e.target.value})}
+                          className="flex-1 px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none input-premium" 
+                        />
+                        {siteConfig.about_image_2 && <img src={siteConfig.about_image_2} className="h-12 w-12 object-cover rounded-lg border border-slate-200" />}
+                      </div>
+                    </div>
+                  </div>
                </div>
              )}
 

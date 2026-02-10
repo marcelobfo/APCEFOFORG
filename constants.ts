@@ -161,6 +161,8 @@ export const INITIAL_SITE_CONFIG: SiteConfig = {
   about_subtitle: 'Uma família.',
   about_history_title: 'Tradição em Bem-Receber',
   about_history_text: 'A Associação do Pessoal da Caixa Econômica Federal do Espírito Santo (APCEF/ES) foi fundada com o objetivo de criar um refúgio...',
+  about_image_1: 'https://picsum.photos/id/433/400/500',
+  about_image_2: 'https://picsum.photos/id/296/400/500',
   
   // Contact
   contact_banner: 'https://picsum.photos/id/42/1920/1080',

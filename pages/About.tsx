@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Award, Users, Map, Shield, Heart, Sun } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -52,8 +53,16 @@ export const About: React.FC = () => {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <img src="https://picsum.photos/id/433/400/500" className="rounded-2xl shadow-lg mt-8" alt="História 1" />
-            <img src="https://picsum.photos/id/296/400/500" className="rounded-2xl shadow-lg" alt="História 2" />
+            <img 
+              src={config.about_image_1 || "https://picsum.photos/id/433/400/500"} 
+              className="rounded-2xl shadow-lg mt-8 w-full h-auto object-cover" 
+              alt="História 1" 
+            />
+            <img 
+              src={config.about_image_2 || "https://picsum.photos/id/296/400/500"} 
+              className="rounded-2xl shadow-lg w-full h-auto object-cover" 
+              alt="História 2" 
+            />
           </div>
         </div>
       </section>
