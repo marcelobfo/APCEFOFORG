@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Layout as LayoutIcon, Save, Plus, Edit, Trash2, Calendar as CalendarIcon, ChevronLeft, Image as ImageIcon, XCircle, Video, Link as LinkIcon, Clock, List, RefreshCw, BarChart } from 'lucide-react';
+import { Settings, Layout as LayoutIcon, Save, Plus, Edit, Trash2, Calendar as CalendarIcon, ChevronLeft, Image as ImageIcon, XCircle, Video, Link as LinkIcon, Clock, List, RefreshCw, BarChart, EyeOff, Eye } from 'lucide-react';
 import { SiteConfig, Space, SpaceType } from '../types';
 
 interface AdminCMSProps {
@@ -259,23 +259,48 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({
                       />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2">Título da História</label>
-                    <input 
-                      type="text" 
-                      value={siteConfig.about_history_title || ''}
-                      onChange={(e) => setSiteConfig({...siteConfig, about_history_title: e.target.value})}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none input-premium" 
-                    />
+
+                  <div className="border-t border-slate-100 pt-6 mt-6">
+                    <h4 className="font-bold text-slate-800 mb-4">Seção "Nossa História"</h4>
+                    
+                    <div className="flex items-center gap-3 mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                      <div className="relative inline-block w-12 h-6 transition duration-200 ease-in-out">
+                          <input 
+                            type="checkbox" 
+                            id="show_history"
+                            checked={siteConfig.show_about_history !== false} 
+                            onChange={(e) => setSiteConfig({...siteConfig, show_about_history: e.target.checked})}
+                            className="opacity-0 w-0 h-0 peer"
+                          />
+                          <label htmlFor="show_history" className={`absolute top-0 left-0 right-0 bottom-0 cursor-pointer rounded-full transition-colors duration-200 ${siteConfig.show_about_history !== false ? 'bg-apcef-blue' : 'bg-slate-300'}`}>
+                            <span className={`absolute left-1 bottom-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 ${siteConfig.show_about_history !== false ? 'transform translate-x-6' : ''}`}></span>
+                          </label>
+                      </div>
+                      <label htmlFor="show_history" className="font-bold text-slate-700 cursor-pointer select-none flex items-center gap-2">
+                         {siteConfig.show_about_history !== false ? <Eye size={18} className="text-apcef-blue"/> : <EyeOff size={18} className="text-slate-400"/>}
+                         Exibir esta seção no site
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Título da História</label>
+                      <input 
+                        type="text" 
+                        value={siteConfig.about_history_title || ''}
+                        onChange={(e) => setSiteConfig({...siteConfig, about_history_title: e.target.value})}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none input-premium" 
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Texto da História</label>
+                      <textarea 
+                        value={siteConfig.about_history_text || ''}
+                        onChange={(e) => setSiteConfig({...siteConfig, about_history_text: e.target.value})}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none h-40 resize-none input-premium" 
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2">Texto da História</label>
-                    <textarea 
-                      value={siteConfig.about_history_text || ''}
-                      onChange={(e) => setSiteConfig({...siteConfig, about_history_text: e.target.value})}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-apcef-blue focus:outline-none h-40 resize-none input-premium" 
-                    />
-                  </div>
+
                   <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
                     <div>
                       <label className="block text-sm font-bold text-slate-700 mb-2">Imagem Destaque 1</label>

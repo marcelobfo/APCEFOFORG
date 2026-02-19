@@ -68,7 +68,7 @@ export interface SiteConfig {
   // Home Content
   hero_title: string;
   hero_subtitle: string;
-  heroButtonText?: string;
+  hero_button_text?: string;
   hero_background?: string;
   
   // About Page Content
@@ -77,6 +77,7 @@ export interface SiteConfig {
   about_subtitle: string;
   about_history_title: string;
   about_history_text: string;
+  show_about_history?: boolean; // Controle de Visibilidade
   about_image_1?: string; // Nova imagem destaque 1
   about_image_2?: string; // Nova imagem destaque 2
 

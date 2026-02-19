@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Users, CheckCircle, Calendar as CalendarIcon, ArrowLeft, ChevronLeft, ChevronRight, X, Send, Image as ImageIcon, Phone, User, Building2, Mail, MessageSquare, ZoomIn, Video, Clock, List } from 'lucide-react';
@@ -275,34 +276,38 @@ export const SpaceDetails: React.FC = () => {
                 {space.description}
               </p>
               
-              {/* Availability & Items Included Section */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                {space.availability && (
-                  <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
-                    <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
-                      <Clock size={18} className="text-apcef-blue"/> Funcionamento
-                    </h4>
-                    <p className="text-slate-600 text-sm">{space.availability}</p>
+              {/* Features & Items Included */}
+              <div className="grid grid-cols-1 gap-8">
+                
+                {/* Features */}
+                <div>
+                  <h3 className="text-lg font-bold text-slate-800 mb-4">Estrutura e Diferenciais:</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {space.features && space.features.map((feature, idx) => (
+                      <div key={idx} className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl text-slate-700 border border-slate-100 hover:border-blue-200 transition-colors">
+                        <CheckCircle size={20} className="text-apcef-teal flex-shrink-0" />
+                        <span className="font-medium">{feature}</span>
+                      </div>
+                    ))}
                   </div>
-                )}
-                {space.itemsIncluded && space.itemsIncluded.length > 0 && (
-                  <div className="bg-green-50 p-5 rounded-xl border border-green-100">
-                    <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
-                      <List size={18} className="text-green-600"/> Itens Inclusos
-                    </h4>
-                    <p className="text-slate-600 text-sm">{space.itemsIncluded.join(', ')}</p>
-                  </div>
-                )}
-              </div>
+                </div>
 
-              <h3 className="text-lg font-bold text-slate-800 mb-4">O que oferece:</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {space.features && space.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl text-slate-700 border border-slate-100 hover:border-blue-200 transition-colors">
-                    <CheckCircle size={20} className="text-apcef-teal flex-shrink-0" />
-                    <span className="font-medium">{feature}</span>
+                {/* Items Included - Simplified List */}
+                {space.itemsIncluded && space.itemsIncluded.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                      <List size={20} className="text-apcef-orange"/> O que oferecemos:
+                    </h3>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-8 pl-2">
+                      {space.itemsIncluded.map((item, idx) => (
+                        <li key={idx} className="flex items-center gap-2 text-slate-600">
+                          <div className="w-1.5 h-1.5 rounded-full bg-apcef-blue"></div>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

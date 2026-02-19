@@ -17,9 +17,23 @@ ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS google_analytics_id text;
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS facebook_pixel_id text;
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS facebook_access_token text;
 
--- NOVAS COLUNAS PARA IMAGENS DA PÁGINA SOBRE
+-- NOVAS COLUNAS PARA PÁGINA SOBRE (Correção do Erro PGRST204)
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_banner text;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_title text;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_subtitle text;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_history_title text;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_history_text text;
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_image_1 text;
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_image_2 text;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS show_about_history boolean DEFAULT true;
+
+-- CORREÇÃO: COLUNAS PARA PÁGINA HOME (HERO) QUE ESTAVAM FALTANDO
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS hero_background text;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS hero_button_text text;
+
+-- CORREÇÃO: COLUNAS PARA PÁGINA CONTATO E LISTAGEM (Garantia)
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS contact_banner text;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS spaces_banner text;
 
 -- Forçar recarregamento do cache do schema
 NOTIFY pgrst, 'reload config';

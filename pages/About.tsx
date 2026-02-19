@@ -40,32 +40,34 @@ export const About: React.FC = () => {
         </div>
       </section>
 
-      {/* History & Context */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="inline-block px-3 py-1 bg-blue-100 text-apcef-blue font-bold rounded-full text-sm mb-4 uppercase tracking-wider">
-              Nossa História
+      {/* History & Context - Conditionally Rendered */}
+      {config.show_about_history !== false && (
+        <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div>
+              <div className="inline-block px-3 py-1 bg-blue-100 text-apcef-blue font-bold rounded-full text-sm mb-4 uppercase tracking-wider">
+                Nossa História
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">{config.about_history_title || "Tradição em Bem-Receber"}</h2>
+              <p className="text-gray-600 mb-4 leading-relaxed whitespace-pre-wrap">
+                {config.about_history_text || "A Associação do Pessoal da Caixa Econômica Federal do Espírito Santo (APCEF/ES) foi fundada com o objetivo de criar um refúgio de lazer e integração para os funcionários da Caixa e seus familiares.\n\nAo longo das décadas, expandimos nossa infraestrutura e abrimos as portas para a comunidade capixaba, tornando-nos referência em eventos sociais e corporativos no estado. Nossa sede em Bicanga é um verdadeiro oásis com completa infraestrutura de esporte e lazer."}
+              </p>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">{config.about_history_title || "Tradição em Bem-Receber"}</h2>
-            <p className="text-gray-600 mb-4 leading-relaxed whitespace-pre-wrap">
-              {config.about_history_text || "A Associação do Pessoal da Caixa Econômica Federal do Espírito Santo (APCEF/ES) foi fundada com o objetivo de criar um refúgio de lazer e integração para os funcionários da Caixa e seus familiares.\n\nAo longo das décadas, expandimos nossa infraestrutura e abrimos as portas para a comunidade capixaba, tornando-nos referência em eventos sociais e corporativos no estado. Nossa sede em Bicanga é um verdadeiro oásis com completa infraestrutura de esporte e lazer."}
-            </p>
+            <div className="grid grid-cols-2 gap-4">
+              <img 
+                src={config.about_image_1 || "https://picsum.photos/id/433/400/500"} 
+                className="rounded-2xl shadow-lg mt-8 w-full h-auto object-cover" 
+                alt="História 1" 
+              />
+              <img 
+                src={config.about_image_2 || "https://picsum.photos/id/296/400/500"} 
+                className="rounded-2xl shadow-lg w-full h-auto object-cover" 
+                alt="História 2" 
+              />
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <img 
-              src={config.about_image_1 || "https://picsum.photos/id/433/400/500"} 
-              className="rounded-2xl shadow-lg mt-8 w-full h-auto object-cover" 
-              alt="História 1" 
-            />
-            <img 
-              src={config.about_image_2 || "https://picsum.photos/id/296/400/500"} 
-              className="rounded-2xl shadow-lg w-full h-auto object-cover" 
-              alt="História 2" 
-            />
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Infrastructure Highlights */}
       <section className="bg-slate-50 py-20">
