@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Filter, X, Clock, MapPin, User, CheckCircle, AlertCircle, Plus, Calendar, Save } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Filter, X, Clock, MapPin, User, CheckCircle, AlertCircle, Plus, Calendar, Save, Mail, Phone, MessageSquare } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { Booking, Space } from '../types';
@@ -23,6 +23,8 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces, 
     clientName: '',
     spaceId: '',
     date: '',
+    email: '',
+    phone: '',
     status: 'confirmed' as 'confirmed' | 'pending' | 'cancelled'
   });
 
@@ -54,6 +56,10 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces, 
     return spaces.find(s => s.id === id)?.name || 'Espaço Desconhecido';
   };
 
+  const openWhatsApp = (phone: string) => {
+    window.open(`https://wa.me/55${phone.replace(/\D/g, '')}`, '_blank');
+  };
+
   const handleDayClick = (day: number) => {
     const dayBookings = getBookingsForDay(day);
     setSelectedDay({ day, bookings: dayBookings });
@@ -65,6 +71,8 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces, 
         clientName: '',
         spaceId: spaces[0]?.id || '',
         date: initialDate,
+        email: '',
+        phone: '',
         status: 'confirmed'
     });
     setIsAddModalOpen(true);
@@ -83,7 +91,9 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces, 
             clientName: newBookingData.clientName,
             spaceId: newBookingData.spaceId,
             date: newBookingData.date,
-            status: newBookingData.status
+            status: newBookingData.status,
+            email: newBookingData.email,
+            phone: newBookingData.phone
         };
 
         const { data, error } = await supabase.from('bookings').insert([payload]).select().single();
@@ -255,6 +265,25 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces, 
                             <Clock size={16} className="text-apcef-orange"/>
                             <span>Dia Todo</span>
                          </div>
+                         
+                         {/* Contact Info Section */}
+                         {(booking.email || booking.phone) && (
+                            <div className="col-span-2 pt-3 mt-1 border-t border-slate-100 flex items-center justify-between">
+                                <div className="space-y-1">
+                                    {booking.email && <div className="flex items-center gap-2 text-xs text-slate-500"><Mail size={12}/> {booking.email}</div>}
+                                    {booking.phone && <div className="flex items-center gap-2 text-xs text-slate-500"><Phone size={12}/> {booking.phone}</div>}
+                                </div>
+                                {booking.phone && (
+                                    <button 
+                                        onClick={() => openWhatsApp(booking.phone!)}
+                                        className="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-200 transition-colors flex items-center gap-1"
+                                    >
+                                        <MessageSquare size={14}/> WhatsApp
+                                    </button>
+                                )}
+                            </div>
+                         )}
+
                          <div className="col-span-2 flex items-center gap-2 pt-2 border-t border-slate-100 mt-1">
                             <User size={16} className="text-slate-400"/>
                             <span className="text-xs text-slate-500">ID da Reserva: {booking.id}</span>
@@ -298,8 +327,8 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces, 
       {/* Manual Booking Add Modal */}
       {isAddModalOpen && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
-                <div className="bg-white p-6 border-b border-slate-100 flex justify-between items-center">
+             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] overflow-y-auto">
+                <div className="bg-white p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 z-10">
                    <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                       <Plus size={20} className="text-apcef-blue"/> Nova Reserva
                    </h3>
@@ -321,6 +350,29 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ bookings, spaces, 
                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
                          placeholder="Ex: Aniversário João"
                       />
+                   </div>
+
+                   <div className="grid grid-cols-2 gap-4">
+                       <div>
+                          <label className="block text-sm font-bold text-slate-700 mb-2">Telefone</label>
+                          <input 
+                             type="text" 
+                             value={newBookingData.phone}
+                             onChange={(e) => setNewBookingData({...newBookingData, phone: e.target.value})}
+                             className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
+                             placeholder="(27) 99999-9999"
+                          />
+                       </div>
+                       <div>
+                          <label className="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                          <input 
+                             type="email" 
+                             value={newBookingData.email}
+                             onChange={(e) => setNewBookingData({...newBookingData, email: e.target.value})}
+                             className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-apcef-blue input-premium"
+                             placeholder="cliente@email.com"
+                          />
+                       </div>
                    </div>
 
                    <div>

@@ -12,6 +12,10 @@ ALTER TABLE spaces ADD COLUMN IF NOT EXISTS gallery text[] DEFAULT '{}';
 ALTER TABLE spaces ADD COLUMN IF NOT EXISTS video_url text;
 ALTER TABLE spaces ADD COLUMN IF NOT EXISTS features text[] DEFAULT '{}';
 
+-- NOVAS COLUNAS PARA RESERVAS (Contato direto no calendário)
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS phone text;
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS email text;
+
 -- NOVAS COLUNAS PARA MARKETING (Analytics & Facebook)
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS google_analytics_id text;
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS facebook_pixel_id text;
