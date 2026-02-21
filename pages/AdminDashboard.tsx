@@ -44,6 +44,10 @@ export const AdminDashboard: React.FC = () => {
     fetchInitialData();
   }, []);
 
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen bg-slate-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-apcef-blue"></div></div>;
+  }
+
   const fetchInitialData = async () => {
     try {
       setLoading(true);

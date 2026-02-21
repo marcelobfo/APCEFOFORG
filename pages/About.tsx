@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Award, Users, Map, Shield, Heart, Sun } from 'lucide-react';
+import { Award, Map, Shield, Heart, Sun } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SiteConfig } from '../types';
 import { INITIAL_SITE_CONFIG } from '../constants';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Layout as LayoutIcon, Save, Plus, Edit, Trash2, Calendar as CalendarIcon, ChevronLeft, Image as ImageIcon, XCircle, Video, Link as LinkIcon, Clock, List, RefreshCw, BarChart, EyeOff, Eye } from 'lucide-react';
+import { Settings, Layout as LayoutIcon, Save, Plus, Edit, Trash2, ChevronLeft, Image as ImageIcon, XCircle, Video, Clock, List, RefreshCw, BarChart, EyeOff, Eye } from 'lucide-react';
 import { SiteConfig, Space, SpaceType } from '../types';
 
 interface AdminCMSProps {

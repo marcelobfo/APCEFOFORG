@@ -33,6 +33,16 @@ const RouteObserver: React.FC = () => {
 
 const App: React.FC = () => {
   useEffect(() => {
+    // Check session validity to handle "Refresh Token Not Found" errors
+    const checkSession = async () => {
+      const { error } = await supabase.auth.getSession();
+      if (error && error.message.includes('Refresh Token')) {
+        console.warn('Session invalid, signing out...');
+        await supabase.auth.signOut();
+      }
+    };
+    checkSession();
+
     // Load tracking configuration
     const loadConfig = async () => {
       const { data } = await supabase.from('site_settings').select('*').single();

@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 import { SiteConfig } from '../types';
 

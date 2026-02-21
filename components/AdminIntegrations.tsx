@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Key, Webhook, Activity, Copy, CheckCircle } from 'lucide-react';
+import { Plus, Key, Webhook, Activity, Copy } from 'lucide-react';
 import { ApiKey, WebhookConfig, ApiLog } from '../types';
 import { toast } from 'react-hot-toast';
 

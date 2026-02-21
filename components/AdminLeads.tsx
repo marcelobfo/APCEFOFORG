@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Phone, Calendar as CalendarIcon, MessageSquare, Trash2, ArrowRight, Eye, XCircle, User, FileText, CheckCircle, Save } from 'lucide-react';
+import { Mail, Phone, Calendar as CalendarIcon, MessageSquare, Trash2, ArrowRight, Eye, XCircle, User, FileText } from 'lucide-react';
 import { Lead } from '../types';
-import { toast } from 'react-hot-toast';
-import { supabase } from '../lib/supabase';
 
 interface AdminLeadsProps {
   leads: Lead[];
@@ -13,8 +11,6 @@ interface AdminLeadsProps {
 export const AdminLeads: React.FC<AdminLeadsProps> = ({ leads, onUpdateStatus, onDelete }) => {
   const [draggedLead, setDraggedLead] = useState<Lead | null>(null);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [isEditingDate, setIsEditingDate] = useState(false);
-  const [editedDate, setEditedDate] = useState('');
   
   const columns: { id: Lead['status'], title: string, color: string }[] = [
     { id: 'new', title: 'Novos Interessados', color: 'bg-blue-50/50 border-blue-200' },
@@ -34,30 +30,6 @@ export const AdminLeads: React.FC<AdminLeadsProps> = ({ leads, onUpdateStatus, o
 
   const openWhatsApp = (phone: string) => {
     window.open(`https://wa.me/55${phone.replace(/\D/g, '')}`, '_blank');
-  };
-
-  const handleOpenModal = (lead: Lead) => {
-      setSelectedLead(lead);
-      setEditedDate(lead.date);
-      setIsEditingDate(false);
-  };
-
-  const handleSaveDate = async () => {
-    if (!selectedLead) return;
-    
-    try {
-        const { error } = await supabase.from('leads').update({ date: editedDate }).eq('id', selectedLead.id);
-        if (error) throw error;
-        
-        // Update local state is tricky without refetching parent, but we update the selected lead visually
-        setSelectedLead({ ...selectedLead, date: editedDate });
-        toast.success("Data da reserva atualizada!");
-        setIsEditingDate(false);
-        // Note: The main Kanban board won't reflect this until refresh unless we lift this state up, but the modal will.
-        // For a full fix, onUpdateStatus/onDelete prop pattern would need an onUpdateData prop.
-    } catch (err) {
-        toast.error("Erro ao atualizar data.");
-    }
   };
 
   return (
@@ -82,8 +54,8 @@ export const AdminLeads: React.FC<AdminLeadsProps> = ({ leads, onUpdateStatus, o
                 key={lead.id}
                 draggable
                 onDragStart={() => handleDragStart(lead)}
-                onClick={() => handleOpenModal(lead)}
-                className={`bg-white p-4 rounded-xl shadow-sm border cursor-pointer hover:shadow-md transition-all group relative ${lead.status === 'converted' ? 'border-green-200 ring-1 ring-green-100' : 'border-slate-100'}`}
+                onClick={() => setSelectedLead(lead)}
+                className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 cursor-pointer hover:shadow-md transition-all group relative"
               >
                 <div className="flex justify-between items-start mb-3">
                   <h4 className="font-bold text-slate-800">{lead.name}</h4>
@@ -97,14 +69,6 @@ export const AdminLeads: React.FC<AdminLeadsProps> = ({ leads, onUpdateStatus, o
                   <div className="flex items-center gap-2"><Phone size={12}/> {lead.phone}</div>
                 </div>
 
-                {/* SHOW DATE PROMINENTLY IF CONVERTED */}
-                {lead.status === 'converted' && (
-                    <div className="mt-3 mb-3 p-2 bg-green-50 text-green-800 text-xs rounded-lg font-bold flex items-center justify-center gap-2 border border-green-100">
-                        <CalendarIcon size={14} />
-                        Agendado: {new Date(lead.date).toLocaleDateString()}
-                    </div>
-                )}
-
                 <div className="flex items-center gap-2 pt-3 border-t border-slate-50">
                    <button 
                       onClick={(e) => { e.stopPropagation(); openWhatsApp(lead.phone); }} 
@@ -113,7 +77,7 @@ export const AdminLeads: React.FC<AdminLeadsProps> = ({ leads, onUpdateStatus, o
                      <MessageSquare size={12} /> WhatsApp
                    </button>
                    <button 
-                      onClick={(e) => { e.stopPropagation(); handleOpenModal(lead); }}
+                      onClick={(e) => { e.stopPropagation(); setSelectedLead(lead); }}
                       className="p-1.5 text-apcef-blue hover:bg-blue-50 rounded-lg transition-colors"
                       title="Ver Detalhes"
                    >
@@ -154,26 +118,9 @@ export const AdminLeads: React.FC<AdminLeadsProps> = ({ leads, onUpdateStatus, o
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-slate-800">{selectedLead.name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                     {isEditingDate ? (
-                        <div className="flex items-center gap-2">
-                             <input 
-                                type="date" 
-                                value={editedDate} 
-                                onChange={(e) => setEditedDate(e.target.value)}
-                                className="text-sm border border-slate-300 rounded px-2 py-1"
-                             />
-                             <button onClick={handleSaveDate} className="bg-green-100 text-green-700 p-1 rounded hover:bg-green-200"><Save size={14}/></button>
-                             <button onClick={() => setIsEditingDate(false)} className="bg-slate-100 text-slate-500 p-1 rounded hover:bg-slate-200"><XCircle size={14}/></button>
-                        </div>
-                     ) : (
-                        <button onClick={() => setIsEditingDate(true)} className="text-sm text-slate-500 flex items-center gap-2 hover:text-apcef-blue transition-colors group">
-                             <CalendarIcon size={14} /> 
-                             Data da Reserva: <span className="font-bold">{new Date(selectedLead.date).toLocaleDateString()}</span>
-                             <span className="text-[10px] bg-slate-100 px-1 rounded opacity-0 group-hover:opacity-100">Editar</span>
-                        </button>
-                     )}
-                  </div>
+                  <p className="text-sm text-slate-500 flex items-center gap-2">
+                    <CalendarIcon size={14} /> Criado em {new Date(selectedLead.date).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
               <button onClick={() => setSelectedLead(null)} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-700">

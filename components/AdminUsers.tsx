@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { UserPlus, Shield, Mail, User, CheckCircle, XCircle } from 'lucide-react';
+import { UserPlus, CheckCircle, XCircle } from 'lucide-react';
 import { UserProfile, UserRole } from '../types';
-import { toast } from 'react-hot-toast';
 
 interface AdminUsersProps {
   users: UserProfile[];

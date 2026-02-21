@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { Space } from '../types';
 
 export const Sitemap: React.FC = () => {
-  const [spaces, setSpaces] = useState<Space[]>([]);
+  const [spaces, setSpaces] = useState<Pick<Space, 'id' | 'name' | 'type'>[]>([]);
 
   useEffect(() => {
     supabase.from('spaces').select('id, name, type').then(({ data }) => {

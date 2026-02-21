@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar as CalendarIcon, DollarSign, Users, TrendingUp } from 'lucide-react';
+import { Calendar as CalendarIcon, Users, TrendingUp } from 'lucide-react';
 import { Booking, Lead } from '../types';
 
 interface AdminOverviewProps {

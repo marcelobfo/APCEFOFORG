@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Users, CheckCircle, Calendar as CalendarIcon, ArrowLeft, ChevronLeft, ChevronRight, X, Send, Image as ImageIcon, Phone, User, Building2, Mail, MessageSquare, ZoomIn, Video, Clock, List } from 'lucide-react';
+import { Users, CheckCircle, Calendar as CalendarIcon, ArrowLeft, ChevronLeft, ChevronRight, X, Send, Image as ImageIcon, Phone, User, Building2, Mail, MessageSquare, ZoomIn, Video, List, Clock } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { Space } from '../types';
@@ -72,10 +72,6 @@ export const SpaceDetails: React.FC = () => {
   const blanks = Array.from({ length: firstDayOfMonth }, (_, i) => i);
 
   const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-
-  const isDateBooked = (day: number) => {
-    return false;
-  };
 
   const handleDateClick = (day: number) => {
     const today = new Date();
@@ -272,6 +268,38 @@ export const SpaceDetails: React.FC = () => {
                 Sobre o Espaço
                 <div className="h-1 w-12 bg-apcef-orange rounded-full ml-2"></div>
               </h2>
+
+              {/* Info Cards Row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center gap-4">
+                  <div className="p-2 bg-white rounded-lg text-apcef-teal shadow-sm">
+                    <Users size={24} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Capacidade</p>
+                    <p className="font-bold text-slate-800">{space.capacity} Pessoas</p>
+                  </div>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center gap-4">
+                  <div className="p-2 bg-white rounded-lg text-apcef-orange shadow-sm">
+                    <Building2 size={24} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Tipo</p>
+                    <p className="font-bold text-slate-800">{space.type}</p>
+                  </div>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center gap-4">
+                  <div className="p-2 bg-white rounded-lg text-apcef-blue shadow-sm">
+                    <Clock size={24} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Disponibilidade</p>
+                    <p className="font-bold text-slate-800 text-sm leading-tight">{space.availability || 'Sob Consulta'}</p>
+                  </div>
+                </div>
+              </div>
+
               <p className="text-slate-600 leading-relaxed text-lg mb-8 whitespace-pre-wrap">
                 {space.description}
               </p>
@@ -284,7 +312,7 @@ export const SpaceDetails: React.FC = () => {
                   <h3 className="text-lg font-bold text-slate-800 mb-4">Estrutura e Diferenciais:</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {space.features && space.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl text-slate-700 border border-slate-100 hover:border-blue-200 transition-colors">
+                      <div key={idx} className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl text-slate-700 border border-slate-100 hover:border-apcef-teal/30 transition-colors">
                         <CheckCircle size={20} className="text-apcef-teal flex-shrink-0" />
                         <span className="font-medium">{feature}</span>
                       </div>
@@ -298,9 +326,9 @@ export const SpaceDetails: React.FC = () => {
                     <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                       <List size={20} className="text-apcef-orange"/> O que oferecemos:
                     </h3>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-8 pl-2">
+                    <ul className="space-y-2 pl-2">
                       {space.itemsIncluded.map((item, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-slate-600">
+                        <li key={idx} className="flex items-center gap-3 text-slate-600">
                           <div className="w-1.5 h-1.5 rounded-full bg-apcef-blue"></div>
                           {item}
                         </li>
@@ -330,7 +358,7 @@ export const SpaceDetails: React.FC = () => {
                 
                 {/* Calendar Headers */}
                 <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                  {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map(d => <div key={d} className="py-1">{d}</div>)}
+                  {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => <div key={i} className="py-1">{d}</div>)}
                 </div>
                 
                 {/* Calendar Grid */}

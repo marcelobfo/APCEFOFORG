@@ -39,8 +39,6 @@ export interface Booking {
   clientName: string;
   status: 'pending' | 'confirmed' | 'cancelled';
   totalValue?: number; // Agora opcional
-  email?: string; // Novo: Contato
-  phone?: string; // Novo: Contato
 }
 
 export interface Lead {
