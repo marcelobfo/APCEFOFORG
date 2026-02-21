@@ -6,9 +6,11 @@ import { supabase } from '../lib/supabase';
 import { SiteConfig } from '../types';
 import { INITIAL_SITE_CONFIG } from '../constants';
 import { trackEvent } from '../lib/tracking';
+import { SEO } from '../components/SEO';
 
 export const Contact: React.FC = () => {
   const [config, setConfig] = useState<SiteConfig>(INITIAL_SITE_CONFIG);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,11 +25,20 @@ export const Contact: React.FC = () => {
   useEffect(() => {
     supabase.from('site_settings').select('*').single().then(({data}) => {
       if(data) setConfig(data);
+      setLoading(false);
     });
     
     // Track ViewContent for Contact Page
     trackEvent('ViewContent', { content_name: 'Contact Page', content_category: 'Page' });
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-apcef-blue"></div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,6 +114,11 @@ export const Contact: React.FC = () => {
 
   return (
     <div className="bg-apcef-sand min-h-screen">
+      <SEO 
+        title="Contato"
+        description="Entre em contato conosco e solicite um orçamento para seu evento."
+        image={config.contact_banner}
+      />
       {/* Hero Section */}
       <section className="relative h-[40vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">

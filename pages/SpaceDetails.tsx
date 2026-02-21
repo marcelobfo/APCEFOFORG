@@ -6,9 +6,11 @@ import { toast } from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { Space } from '../types';
 import { trackEvent } from '../lib/tracking';
+import { slugify } from '../lib/utils';
+import { SEO } from '../components/SEO';
 
 export const SpaceDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   
   const [space, setSpace] = useState<Space | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,23 +38,33 @@ export const SpaceDetails: React.FC = () => {
   const currentYear = displayDate.getFullYear();
   
   useEffect(() => {
-    if (id) {
+    if (slug) {
       fetchSpaceDetails();
     }
-  }, [id]);
+  }, [slug]);
 
   const fetchSpaceDetails = async () => {
     try {
-      const { data, error } = await supabase.from('spaces').select('*').eq('id', id).single();
+      // Since we don't have a slug column in DB yet, we fetch all and find match
+      // In a real production app with thousands of records, we would add a slug column and query by it
+      const { data, error } = await supabase.from('spaces').select('*');
+      
       if (error) throw error;
-      setSpace(data);
+      
+      const foundSpace = data.find(s => slugify(s.name) === slug);
+      
+      if (!foundSpace) {
+        throw new Error('Space not found');
+      }
+
+      setSpace(foundSpace);
       
       // Track ViewContent for the Space
       trackEvent('ViewContent', {
-        content_name: data.name,
+        content_name: foundSpace.name,
         content_type: 'product',
-        content_ids: [data.id],
-        value: data.price || 0,
+        content_ids: [foundSpace.id],
+        value: foundSpace.price || 0,
         currency: 'BRL'
       });
 
@@ -197,6 +209,11 @@ export const SpaceDetails: React.FC = () => {
 
   return (
     <div className="bg-slate-50 min-h-screen pb-20 relative">
+      <SEO 
+        title={space.name}
+        description={space.description}
+        image={space.image}
+      />
       {/* Hero Header */}
       <div className="relative h-[60vh] group">
         <img src={space.image} alt={space.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />

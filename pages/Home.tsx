@@ -5,6 +5,7 @@ import { ChevronRight, Users, Layout, Star, MapPin, ShieldCheck, Sun } from 'luc
 import { supabase } from '../lib/supabase';
 import { Space, SiteConfig } from '../types';
 import { INITIAL_SITE_CONFIG } from '../constants';
+import { SEO } from '../components/SEO';
 
 export const Home: React.FC = () => {
   const [featuredSpaces, setFeaturedSpaces] = useState<Space[]>([]);
@@ -31,8 +32,23 @@ export const Home: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-apcef-blue"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col">
+      <SEO 
+        title={config.site_name}
+        description={config.seo_description}
+        keywords={config.keywords}
+        favicon={config.favicon_url}
+        image={config.hero_background}
+      />
       {/* Hero Section */}
       <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">

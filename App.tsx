@@ -86,7 +86,7 @@ const App: React.FC = () => {
         
         {/* SEO Friendly Routes in Portuguese */}
         <Route path="/espacos" element={<PublicRoute><Spaces /></PublicRoute>} />
-        <Route path="/espacos/:id" element={<PublicRoute><SpaceDetails /></PublicRoute>} />
+        <Route path="/espacos/:slug" element={<PublicRoute><SpaceDetails /></PublicRoute>} />
         <Route path="/sobre" element={<PublicRoute><About /></PublicRoute>} />
         <Route path="/contato" element={<PublicRoute><Contact /></PublicRoute>} />
         <Route path="/mapa-do-site" element={<PublicRoute><Sitemap /></PublicRoute>} />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Space } from '../types';
+import { slugify } from '../lib/utils';
 
 export const Sitemap: React.FC = () => {
   const [spaces, setSpaces] = useState<Pick<Space, 'id' | 'name' | 'type'>[]>([]);
@@ -34,7 +35,7 @@ export const Sitemap: React.FC = () => {
             <ul className="space-y-3">
               {spaces.map(space => (
                 <li key={space.id}>
-                  <Link to={`/espacos/${space.id}`} className="text-apcef-blue hover:underline hover:text-apcef-orange flex items-center gap-2">
+                  <Link to={`/espacos/${slugify(space.name)}`} className="text-apcef-blue hover:underline hover:text-apcef-orange flex items-center gap-2">
                     <span>{space.name}</span>
                     <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{space.type}</span>
                   </Link>

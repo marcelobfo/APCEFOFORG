@@ -4,6 +4,8 @@ import { Users, Filter, Clock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Space, SiteConfig } from '../types';
 import { INITIAL_SITE_CONFIG } from '../constants';
+import { slugify } from '../lib/utils';
+import { SEO } from '../components/SEO';
 
 export const Spaces: React.FC = () => {
   const [spaces, setSpaces] = useState<Space[]>([]);
@@ -40,8 +42,21 @@ export const Spaces: React.FC = () => {
 
   const uniqueTypes = Array.from(new Set(spaces.map(s => s.type)));
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-apcef-blue"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gray-50 min-h-screen">
+      <SEO 
+        title="Nossos Espaços"
+        description="Conheça nossos espaços para eventos: casamentos, festas, corporativos e muito mais."
+        image={config.spaces_banner}
+      />
       {/* Dynamic Header */}
       <div className="relative bg-apcef-blue py-20 px-4 mb-10 overflow-hidden">
          <div className="absolute inset-0 opacity-20">
@@ -120,7 +135,7 @@ export const Spaces: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredSpaces.length > 0 ? (
                   filteredSpaces.map(space => (
-                    <Link to={`/espacos/${space.id}`} key={space.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group">
+                    <Link to={`/espacos/${slugify(space.name)}`} key={space.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group">
                       <div className="relative h-56 overflow-hidden">
                         <img src={space.image} alt={space.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-apcef-blue shadow-sm">

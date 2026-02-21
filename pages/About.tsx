@@ -4,9 +4,11 @@ import { Award, Map, Shield, Heart, Sun } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SiteConfig } from '../types';
 import { INITIAL_SITE_CONFIG } from '../constants';
+import { SEO } from '../components/SEO';
 
 export const About: React.FC = () => {
   const [config, setConfig] = useState<SiteConfig>(INITIAL_SITE_CONFIG);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     supabase.from('site_settings').select('*').single().then(({data}) => {
@@ -14,11 +16,25 @@ export const About: React.FC = () => {
         // Merge with initial config to ensure no fields are undefined if DB has nulls
         setConfig(prev => ({...prev, ...data}));
       }
+      setLoading(false);
     });
   }, []);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-apcef-blue"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white">
+      <SEO 
+        title="Sobre Nós"
+        description="Conheça a história e a estrutura da APCEF/ES."
+        image={config.about_banner}
+      />
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
